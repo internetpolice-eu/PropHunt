@@ -200,7 +200,7 @@ public class PropHuntListener implements Listener
     }
     
     private void refreshDisguises() {
-        this.PH.getServer().getScheduler().scheduleSyncDelayedTask((Plugin)this.PH, (Runnable)new Runnable() {
+        this.PH.getServer().getScheduler().scheduleSyncDelayedTask(this.PH, new Runnable() {
             @Override
             public void run() {
                 for (final Player p : PropHuntListener.this.PH.getServer().getOnlinePlayers()) {
@@ -216,7 +216,7 @@ public class PropHuntListener implements Listener
     public void onPlayerRespawn(final PlayerRespawnEvent e) {
         if (GameManager.playersQuit.contains(e.getPlayer().getName())) {
             e.setRespawnLocation(GameManager.currentGameArena.getExitSpawn());
-            this.PH.getServer().getScheduler().scheduleSyncDelayedTask((Plugin)this.PH, (Runnable)new Runnable() {
+            this.PH.getServer().getScheduler().scheduleSyncDelayedTask(this.PH, new Runnable() {
                 @Override
                 public void run() {
                     PlayerManagement.gameRestorePlayer(e.getPlayer());
@@ -249,7 +249,7 @@ public class PropHuntListener implements Listener
             if (GameManager.seekerDelayTime != 0 && GameManager.sd.isDelaying) {
                 GameManager.sd.addPlayer(e.getPlayer());
             }
-            this.PH.getServer().getScheduler().scheduleSyncDelayedTask((Plugin)this.PH, (Runnable)new Runnable() {
+            this.PH.getServer().getScheduler().scheduleSyncDelayedTask(this.PH, new Runnable() {
                 @Override
                 public void run() {
                     PropHuntListener.this.PH.showPlayer(e.getPlayer(), false);
@@ -377,7 +377,7 @@ public class PropHuntListener implements Listener
                 break;
             }
         }
-        final ItemMessage im = new ItemMessage((Plugin)this.PH);
+        final ItemMessage im = new ItemMessage(this.PH);
         String message = MessageBank.CREDITS_EARN_POPUP.getMsg();
         message = message.replace("\\{credits\\}", amount + " " + ShopSettings.currencyName);
         im.sendMessage(p, ChatColor.translateAlternateColorCodes('&', message));
@@ -462,11 +462,11 @@ public class PropHuntListener implements Listener
     }
     
     private void respawnQuick(final Player player) {
-        this.PH.getServer().getScheduler().scheduleSyncDelayedTask((Plugin)this.PH, (Runnable)new Runnable() {
+        this.PH.getServer().getScheduler().scheduleSyncDelayedTask(this.PH, new Runnable() {
             @Override
             public void run() {
                 final PacketContainer packet = new PacketContainer(PacketType.Play.Client.CLIENT_COMMAND);
-                packet.getClientCommands().write(0, (Object)EnumWrappers.ClientCommand.PERFORM_RESPAWN);
+                packet.getClientCommands().write(0, EnumWrappers.ClientCommand.PERFORM_RESPAWN);
                 try {
                     ProtocolLibrary.getProtocolManager().recieveClientPacket(player, packet);
                 }
@@ -547,7 +547,7 @@ public class PropHuntListener implements Listener
     @EventHandler
     public void onlogin(final PlayerJoinEvent e) {
         if (GameManager.dedicated) {
-            this.PH.getServer().getScheduler().scheduleSyncDelayedTask((Plugin)this.PH, (Runnable)new Runnable() {
+            this.PH.getServer().getScheduler().scheduleSyncDelayedTask(this.PH, new Runnable() {
                 @Override
                 public void run() {
                     PropHuntListener.this.GM.addPlayerToGame(e.getPlayer().getName());
@@ -557,7 +557,7 @@ public class PropHuntListener implements Listener
         if (GameManager.playersQuit.contains(e.getPlayer().getName())) {
             this.GM.teleportToExit(e.getPlayer(), false);
             PropHuntMessaging.sendMessage(e.getPlayer(), MessageBank.QUIT_GAME_MESSAGE.getMsg());
-            this.PH.getServer().getScheduler().scheduleSyncDelayedTask((Plugin)this.PH, (Runnable)new Runnable() {
+            this.PH.getServer().getScheduler().scheduleSyncDelayedTask(this.PH, new Runnable() {
                 @Override
                 public void run() {
                     PlayerManagement.gameRestorePlayer(e.getPlayer());
@@ -576,7 +576,7 @@ public class PropHuntListener implements Listener
             final Pinger p = new Pinger(this.PH);
             p.sentData = true;
             p.sendServerDataEmpty();
-            this.PH.getServer().getScheduler().scheduleSyncDelayedTask((Plugin)this.PH, (Runnable)new Runnable() {
+            this.PH.getServer().getScheduler().scheduleSyncDelayedTask(this.PH, new Runnable() {
                 @Override
                 public void run() {
                     p.sentData = false;

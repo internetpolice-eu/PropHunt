@@ -26,7 +26,7 @@ public class LoadoutChooser implements Listener
             PropHuntMessaging.sendMessage(p, MessageBank.NOT_IN_LOBBY.getMsg());
             return;
         }
-        final Inventory inv = Bukkit.createInventory((InventoryHolder)p, this.getShopSize(this.plugin.getShopSettings().itemChoices.size()), MessageBank.LOADOUT_NAME.getMsg());
+        final Inventory inv = Bukkit.createInventory(p, this.getShopSize(this.plugin.getShopSettings().itemChoices.size()), MessageBank.LOADOUT_NAME.getMsg());
         for (final ShopItem sI : this.plugin.getShopSettings().itemChoices) {
             sI.addToInventory(inv, p);
         }
@@ -42,10 +42,10 @@ public class LoadoutChooser implements Listener
                 e.setCancelled(true);
                 return;
             }
-            if (e.getCurrentItem().getType().equals((Object)Material.AIR)) {
+            if (e.getCurrentItem().getType().equals(Material.AIR)) {
                 return;
             }
-            if (GameManager.playersWaiting.contains(((Player)e.getWhoClicked()).getName())) {
+            if (GameManager.playersWaiting.contains(e.getWhoClicked().getName())) {
                 if (!DisguiseManager.loadouts.containsKey(e.getWhoClicked())) {
                     DisguiseManager.loadouts.put((Player)e.getWhoClicked(), new Loadout((Player)e.getWhoClicked()));
                     DisguiseManager.loadouts.get(e.getWhoClicked()).addItem(e.getCurrentItem());

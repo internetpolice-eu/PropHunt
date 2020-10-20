@@ -34,7 +34,7 @@ public class ShopSettings
     
     public List<ShopItem> generateBlockChoices(final PropHunt plugin, final ShopConfig shopConfig) {
         final String path = "Disguises";
-        final Set<String> keys = (Set<String>)shopConfig.getShopConfig().getConfigurationSection(path).getKeys(false);
+        final Set<String> keys = shopConfig.getShopConfig().getConfigurationSection(path).getKeys(false);
         for (final String key : keys) {
             final String name = shopConfig.getShopConfig().getString(path + "." + key + ".Name");
             final String Id = shopConfig.getShopConfig().getString(path + "." + key + ".Id");
@@ -53,7 +53,7 @@ public class ShopSettings
     
     public List<ShopItem> generateItemChoices(final PropHunt plugin, final ShopConfig shopConfig) {
         final String path = "Items";
-        final Set<String> keys = (Set<String>)shopConfig.getShopConfig().getConfigurationSection(path).getKeys(false);
+        final Set<String> keys = shopConfig.getShopConfig().getConfigurationSection(path).getKeys(false);
         for (final String key : keys) {
             final String name = shopConfig.getShopConfig().getString(path + "." + key + ".Name");
             final String Id = shopConfig.getShopConfig().getString(path + "." + key + ".Id");
@@ -75,15 +75,15 @@ public class ShopSettings
         if (mat.split(":").length == 2) {
             final int id = Integer.valueOf(s.split(":")[0]);
             final int damage = Integer.valueOf(s.split(":")[1]);
-            final ItemStack stack = new ItemStack(id, 1, (short)(byte)damage);
+            final ItemStack stack = new ItemStack(id, 1, (byte)damage);
             return stack;
         }
         if (mat.split(":").length != 1) {
             ShopSettings.staticPlugin.getLogger().warning("Error with Custom item: " + s);
             return null;
         }
-        if (Material.getMaterial((int)Integer.valueOf(s)) != null) {
-            final ItemStack stack = new ItemStack(Material.getMaterial((int)Integer.valueOf(s)), 1);
+        if (Material.getMaterial(Integer.valueOf(s)) != null) {
+            final ItemStack stack = new ItemStack(Material.getMaterial(Integer.valueOf(s)), 1);
             return stack;
         }
         return null;
@@ -118,15 +118,15 @@ public class ShopSettings
         if (s.split(":").length == 2) {
             final int id = Integer.valueOf(s.split(":")[0]);
             final int damage = Integer.valueOf(s.split(":")[1]);
-            final ItemStack stack = new ItemStack(id, 1, (short)(byte)damage);
+            final ItemStack stack = new ItemStack(id, 1, (byte)damage);
             return stack;
         }
         if (s.split(":").length != 1) {
             plugin.getLogger().warning("Error with shop item with ID: " + s);
             return null;
         }
-        if (Material.getMaterial((int)Integer.valueOf(s)) != null) {
-            final ItemStack stack = new ItemStack(Material.getMaterial((int)Integer.valueOf(s)), 1);
+        if (Material.getMaterial(Integer.valueOf(s)) != null) {
+            final ItemStack stack = new ItemStack(Material.getMaterial(Integer.valueOf(s)), 1);
             return stack;
         }
         return null;
@@ -161,7 +161,7 @@ public class ShopSettings
                 TOTEnchants.put(Enchantment.getById(ENCHANTID), ENCHANTLEVEL);
             }
             stack = new ItemStack(itemint, 1);
-            stack.addUnsafeEnchantments((Map)TOTEnchants);
+            stack.addUnsafeEnchantments(TOTEnchants);
             return stack;
         }
         final String[] damagesplit = s.split(":");

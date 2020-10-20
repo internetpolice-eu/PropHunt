@@ -29,7 +29,7 @@ public class ServerManager implements Listener
             }
             if (BungeeSettings.usingPropHuntSigns && BungeeSettings.kickToHub) {
                 final Pinger ping = new Pinger(this.plugin);
-                this.plugin.getServer().getScheduler().scheduleSyncDelayedTask((Plugin)this.plugin, (Runnable)new Runnable() {
+                this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin, new Runnable() {
                     @Override
                     public void run() {
                         try {

@@ -69,15 +69,15 @@ public class Arena
     }
     
     public void saveArenaToFile(final PropHunt plugin) {
-        plugin.AS.getStorageFile().set("Arenas." + this.arenaName + ".lobbySpawn", (Object)new LocationBox(this.getLobbySpawn()).box());
-        plugin.AS.getStorageFile().set("Arenas." + this.arenaName + ".seekerSpawn", (Object)new LocationBox(this.getSeekerSpawn()).box());
-        plugin.AS.getStorageFile().set("Arenas." + this.arenaName + ".hiderSpawn", (Object)new LocationBox(this.getHiderSpawn()).box());
-        plugin.AS.getStorageFile().set("Arenas." + this.arenaName + ".exitSpawn", (Object)new LocationBox(this.getExitSpawn()).box());
-        plugin.AS.getStorageFile().set("Arenas." + this.arenaName + ".spectatorSpawn", (Object)new LocationBox(this.getSpectatorSpawn()).box());
+        plugin.AS.getStorageFile().set("Arenas." + this.arenaName + ".lobbySpawn", new LocationBox(this.getLobbySpawn()).box());
+        plugin.AS.getStorageFile().set("Arenas." + this.arenaName + ".seekerSpawn", new LocationBox(this.getSeekerSpawn()).box());
+        plugin.AS.getStorageFile().set("Arenas." + this.arenaName + ".hiderSpawn", new LocationBox(this.getHiderSpawn()).box());
+        plugin.AS.getStorageFile().set("Arenas." + this.arenaName + ".exitSpawn", new LocationBox(this.getExitSpawn()).box());
+        plugin.AS.getStorageFile().set("Arenas." + this.arenaName + ".spectatorSpawn", new LocationBox(this.getSpectatorSpawn()).box());
         plugin.AS.saveStorageFile();
         plugin.AS.saveStorageFile();
         if (!plugin.getConfig().contains("CustomArenaConfigs." + this.arenaName + ".usingDefault")) {
-            plugin.getConfig().set("CustomArenaConfigs." + this.arenaName + ".usingDefault", (Object)true);
+            plugin.getConfig().set("CustomArenaConfigs." + this.arenaName + ".usingDefault", true);
             plugin.saveConfig();
         }
     }

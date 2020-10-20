@@ -17,7 +17,7 @@ public class AutomationSettings
     public static void initSettings(final PropHunt plugin) {
         AutomationSettings.dispatchCommands = plugin.getConfig().getBoolean("AutomationSettings.dispatch-commands-after-x-games");
         AutomationSettings.gamesTillReset = plugin.getConfig().getInt("AutomationSettings.number-of-games");
-        AutomationSettings.commandsToRun = (List<String>)plugin.getConfig().getStringList("AutomationSettings.commands");
+        AutomationSettings.commandsToRun = plugin.getConfig().getStringList("AutomationSettings.commands");
     }
     
     public static boolean runChecks(final PropHunt plugin) {
@@ -40,7 +40,7 @@ public class AutomationSettings
                 }
                 else {
                     if (command.equalsIgnoreCase("stop")) {
-                        plugin.getServer().getScheduler().scheduleSyncDelayedTask((Plugin)plugin, (Runnable)new Runnable() {
+                        plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
                             @Override
                             public void run() {
                                 plugin.getServer().shutdown();
@@ -48,7 +48,7 @@ public class AutomationSettings
                         }, 100L);
                         return true;
                     }
-                    plugin.getServer().dispatchCommand((CommandSender)plugin.getServer().getConsoleSender(), command);
+                    plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command);
                 }
             }
             AutomationSettings.gamesPlayed = 0;

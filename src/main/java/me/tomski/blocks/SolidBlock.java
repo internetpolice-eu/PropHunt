@@ -55,8 +55,8 @@ public class SolidBlock
     private PacketContainer getBlockPacket() {
         this.blockChange = this.pm.createPacket(PacketType.Play.Server.BLOCK_CHANGE);
         try {
-            this.blockChange.getIntegers().write(0, (Object)this.loc.getBlockX()).write(1, (Object)this.loc.getBlockY()).write(2, (Object)this.loc.getBlockZ()).write(3, (Object)this.damage);
-            this.blockChange.getBlocks().write(0, (Object)Material.getMaterial(this.id));
+            this.blockChange.getIntegers().write(0, this.loc.getBlockX()).write(1, this.loc.getBlockY()).write(2, this.loc.getBlockZ()).write(3, this.damage);
+            this.blockChange.getBlocks().write(0, Material.getMaterial(this.id));
         }
         catch (FieldAccessException e) {
             System.out.println("PropHunt: Error with block change packet");
@@ -68,8 +68,8 @@ public class SolidBlock
         this.dead = true;
         this.blockChange = this.pm.createPacket(PacketType.Play.Server.BLOCK_CHANGE);
         try {
-            this.blockChange.getIntegers().write(0, (Object)this.loc.getBlockX()).write(1, (Object)this.loc.getBlockY()).write(2, (Object)this.loc.getBlockZ()).write(3, (Object)0);
-            this.blockChange.getBlocks().write(0, (Object)Material.AIR);
+            this.blockChange.getIntegers().write(0, this.loc.getBlockX()).write(1, this.loc.getBlockY()).write(2, this.loc.getBlockZ()).write(3, 0);
+            this.blockChange.getBlocks().write(0, Material.AIR);
         }
         catch (FieldAccessException e) {
             System.out.println("PropHunt: Error with block change packet");

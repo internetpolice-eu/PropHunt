@@ -54,7 +54,7 @@ public class VaultUtils
     private boolean setupPermissions() {
         final RegisteredServiceProvider<Permission> permissionProvider = (RegisteredServiceProvider<Permission>)this.plugin.getServer().getServicesManager().getRegistration((Class)Permission.class);
         if (permissionProvider != null) {
-            this.permission = (Permission)permissionProvider.getProvider();
+            this.permission = permissionProvider.getProvider();
         }
         return this.permission != null;
     }
@@ -62,7 +62,7 @@ public class VaultUtils
     private boolean setupEconomy() {
         final RegisteredServiceProvider<Economy> economyProvider = (RegisteredServiceProvider<Economy>)this.plugin.getServer().getServicesManager().getRegistration((Class)Economy.class);
         if (economyProvider != null) {
-            this.economy = (Economy)economyProvider.getProvider();
+            this.economy = economyProvider.getProvider();
         }
         return this.economy != null;
     }

@@ -152,7 +152,7 @@ public class SideBarStats
     }
     
     public void addPlayerToLobby(final PropHunt plugin, final Player p) {
-        plugin.getServer().getScheduler().scheduleSyncDelayedTask((Plugin)plugin, (Runnable)new Runnable() {
+        plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
             @Override
             public void run() {
                 if (p == null || !p.isOnline()) {

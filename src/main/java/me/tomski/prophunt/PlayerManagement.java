@@ -70,7 +70,7 @@ public class PlayerManagement
     
     private static void restoreInvent(final Player p) {
         if (PlayerManagement.playerInvents.containsKey(p.getName())) {
-            p.getInventory().setContents((ItemStack[])PlayerManagement.playerInvents.get(p.getName()));
+            p.getInventory().setContents(PlayerManagement.playerInvents.get(p.getName()));
             p.getInventory();
         }
     }
@@ -81,7 +81,7 @@ public class PlayerManagement
                 return;
             }
             p.setTotalExperience(0);
-            p.setLevel((int)PlayerManagement.playerXP.get(p.getName()));
+            p.setLevel(PlayerManagement.playerXP.get(p.getName()));
             p.updateInventory();
         }
         else {
@@ -91,7 +91,7 @@ public class PlayerManagement
     }
     
     private static void restoreArmour(final Player p) {
-        p.getInventory().setArmorContents((ItemStack[])PlayerManagement.playerArmour.get(p.getName()));
+        p.getInventory().setArmorContents(PlayerManagement.playerArmour.get(p.getName()));
         p.updateInventory();
     }
     

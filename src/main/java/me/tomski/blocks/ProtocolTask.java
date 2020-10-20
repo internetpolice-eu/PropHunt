@@ -21,16 +21,16 @@ public class ProtocolTask implements Listener
     }
     
     public void initProtocol() {
-        PropHunt.protocolManager.getAsynchronousManager().registerAsyncHandler((PacketListener)new PacketAdapter(this.plugin, new PacketType[] { PacketType.Play.Client.BLOCK_PLACE }) {
+        PropHunt.protocolManager.getAsynchronousManager().registerAsyncHandler(new PacketAdapter(this.plugin, new PacketType[] { PacketType.Play.Client.BLOCK_PLACE }) {
             public void onPacketSending(final PacketEvent event) {
                 System.out.println("sent packet " + event.getPacketType());
             }
             
             public void onPacketReceiving(final PacketEvent event) {
                 if (GameManager.hiders.contains(event.getPlayer().getName())) {
-                    final int x = (int)event.getPacket().getIntegers().read(0);
-                    final int y = (int)event.getPacket().getIntegers().read(1);
-                    final int z = (int)event.getPacket().getIntegers().read(2);
+                    final int x = event.getPacket().getIntegers().read(0);
+                    final int y = event.getPacket().getIntegers().read(1);
+                    final int z = event.getPacket().getIntegers().read(2);
                     for (final SolidBlock s : SolidBlockTracker.solidBlocks.values()) {
                         if (s.loc.getBlockX() == x && s.loc.getBlockY() == y && s.loc.getBlockZ() == z) {
                             event.setCancelled(true);
@@ -38,9 +38,9 @@ public class ProtocolTask implements Listener
                     }
                 }
                 if (GameManager.seekers.contains(event.getPlayer().getName())) {
-                    final int x = (int)event.getPacket().getIntegers().read(0);
-                    final int y = (int)event.getPacket().getIntegers().read(1);
-                    final int z = (int)event.getPacket().getIntegers().read(2);
+                    final int x = event.getPacket().getIntegers().read(0);
+                    final int y = event.getPacket().getIntegers().read(1);
+                    final int z = event.getPacket().getIntegers().read(2);
                     for (final SolidBlock s : SolidBlockTracker.solidBlocks.values()) {
                         if (s.loc.getBlockX() == x && s.loc.getBlockY() == y && s.loc.getBlockZ() == z) {
                             event.setCancelled(true);
@@ -49,7 +49,7 @@ public class ProtocolTask implements Listener
                 }
             }
         }).syncStart();
-        PropHunt.protocolManager.getAsynchronousManager().registerAsyncHandler((PacketListener)new PacketAdapter(this.plugin, new PacketType[] { PacketType.Play.Client.ARM_ANIMATION }) {
+        PropHunt.protocolManager.getAsynchronousManager().registerAsyncHandler(new PacketAdapter(this.plugin, new PacketType[] { PacketType.Play.Client.ARM_ANIMATION }) {
             public void onPacketSending(final PacketEvent event) {
                 System.out.println("sent packet " + event.getPacketType());
             }
@@ -63,7 +63,7 @@ public class ProtocolTask implements Listener
                 final Vector3D observerEnd = observerStart.add(observerDir.multiply(3));
                 Player hit = null;
                 try {
-                    for (final Player target : PropHunt.protocolManager.getEntityTrackers((Entity)observer)) {
+                    for (final Player target : PropHunt.protocolManager.getEntityTrackers(observer)) {
                         if (!observer.canSee(target)) {
                             final Vector3D targetPos = new Vector3D(target.getLocation());
                             final Vector3D minimum = targetPos.add(-0.5, 0.0, -0.5);
@@ -78,8 +78,8 @@ public class ProtocolTask implements Listener
                 catch (FieldAccessException ex) {}
                 if (hit != null) {
                     final PacketContainer useEntity = PropHunt.protocolManager.createPacket(PacketType.Play.Client.USE_ENTITY);
-                    useEntity.getIntegers().write(0, (Object)hit.getEntityId());
-                    useEntity.getEntityUseActions().write(0, (Object)EnumWrappers.EntityUseAction.ATTACK);
+                    useEntity.getIntegers().write(0, hit.getEntityId());
+                    useEntity.getEntityUseActions().write(0, EnumWrappers.EntityUseAction.ATTACK);
                     try {
                         PropHunt.protocolManager.recieveClientPacket(event.getPlayer(), useEntity);
                     }

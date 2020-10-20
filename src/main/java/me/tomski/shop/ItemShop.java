@@ -22,7 +22,7 @@ public class ItemShop implements Listener
     }
     
     public void openMainShop(final Player p) {
-        final Inventory i = Bukkit.createInventory((InventoryHolder)p, this.getShopSize(this.plugin.getShopSettings().itemChoices.size()), MessageBank.ITEM_SHOP_NAME.getMsg());
+        final Inventory i = Bukkit.createInventory(p, this.getShopSize(this.plugin.getShopSettings().itemChoices.size()), MessageBank.ITEM_SHOP_NAME.getMsg());
         for (final ShopItem item : this.plugin.getShopSettings().itemChoices) {
             item.addToInventory(i, p);
         }
@@ -35,7 +35,7 @@ public class ItemShop implements Listener
     public void onInventoryClick(final InventoryClickEvent e) {
         if (this.inMenu.contains(e.getWhoClicked()) && e.getCurrentItem() != null) {
             for (final ShopItem item : this.plugin.getShopSettings().itemChoices) {
-                if (item.itemStack.getType().equals((Object)e.getCurrentItem().getType())) {
+                if (item.itemStack.getType().equals(e.getCurrentItem().getType())) {
                     if ((item.itemStack.getData() != null || item.itemStack.getData().getData() != 0) && item.itemStack.getData().getData() == e.getCurrentItem().getData().getData()) {
                         item.buyItem((Player)e.getWhoClicked());
                         e.getView().close();
@@ -46,7 +46,7 @@ public class ItemShop implements Listener
                     return;
                 }
             }
-            if (e.getCurrentItem().getType().equals((Object)Material.EMERALD)) {
+            if (e.getCurrentItem().getType().equals(Material.EMERALD)) {
                 e.setCancelled(true);
             }
         }
@@ -65,7 +65,7 @@ public class ItemShop implements Listener
         currencyMeta.setDisplayName(ChatColor.GOLD + ShopSettings.currencyName);
         final List<String> currencyLore = new ArrayList<String>();
         currencyLore.add(ChatColor.GREEN + "" + this.getCurrencyBalance(p));
-        currencyMeta.setLore((List)currencyLore);
+        currencyMeta.setLore(currencyLore);
         currency.setItemMeta(currencyMeta);
         i.setItem(i.getSize() - 1, currency);
     }

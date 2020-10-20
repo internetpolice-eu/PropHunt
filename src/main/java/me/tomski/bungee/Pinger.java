@@ -20,7 +20,7 @@ public class Pinger
         final DataOutputStream out = new DataOutputStream(b);
         out.writeUTF("Connect");
         out.writeUTF(hub);
-        p.sendPluginMessage((Plugin)this.plugin, "BungeeCord", b.toByteArray());
+        p.sendPluginMessage(this.plugin, "BungeeCord", b.toByteArray());
     }
     
     public void sendServerDataEmpty() throws IOException {
@@ -54,7 +54,7 @@ public class Pinger
             }
             out.writeShort(msgbytes.toByteArray().length);
             out.write(msgbytes.toByteArray());
-            this.plugin.getServer().getOnlinePlayers()[0].sendPluginMessage((Plugin)this.plugin, "BungeeCord", b.toByteArray());
+            this.plugin.getServer().getOnlinePlayers()[0].sendPluginMessage(this.plugin, "BungeeCord", b.toByteArray());
         }
     }
     
@@ -94,7 +94,7 @@ public class Pinger
             }
             out.writeShort(msgbytes.toByteArray().length);
             out.write(msgbytes.toByteArray());
-            this.plugin.getServer().getOnlinePlayers()[0].sendPluginMessage((Plugin)this.plugin, "BungeeCord", b.toByteArray());
+            this.plugin.getServer().getOnlinePlayers()[0].sendPluginMessage(this.plugin, "BungeeCord", b.toByteArray());
         }
     }
 }

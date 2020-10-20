@@ -146,14 +146,14 @@ public class GameManager
             return;
         }
         GameManager.GT = new GameTimer(this, this.plugin, GameManager.seeker_damage, GameManager.interval, GameManager.starting_time, this.plugin.SBS);
-        GameManager.TIMERID = this.plugin.getServer().getScheduler().scheduleSyncRepeatingTask((Plugin)this.plugin, (Runnable)GameManager.GT, 20L, 20L);
+        GameManager.TIMERID = this.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(this.plugin, GameManager.GT, 20L, 20L);
         GameManager.GT.ID = GameManager.TIMERID;
         GameManager.timeleft = GameManager.starting_time;
         if (GameManager.usingSolidBlock) {
             final SolidBlockTracker SBT = new SolidBlockTracker(this.plugin);
-            this.TRACKERID = this.plugin.getServer().getScheduler().scheduleSyncRepeatingTask((Plugin)this.plugin, (Runnable)SBT, 0L, 20L);
+            this.TRACKERID = this.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(this.plugin, SBT, 0L, 20L);
             final DeSolidifyThread DST = new DeSolidifyThread(this.plugin);
-            this.DETRACKERID = this.plugin.getServer().getScheduler().scheduleSyncRepeatingTask((Plugin)this.plugin, (Runnable)DST, 0L, 2L);
+            this.DETRACKERID = this.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(this.plugin, DST, 0L, 2L);
         }
         this.freshPlayers();
         this.chooseSeekerAndSortPlayers();
@@ -162,11 +162,11 @@ public class GameManager
         GameManager.seekerLives.put(this.plugin.getServer().getPlayer(GameManager.firstSeeker), GameManager.seekerLivesAmount);
         if (GameManager.seekerDelayTime != 0) {
             GameManager.sd = new SeekerDelay(this.plugin.getServer().getPlayer(GameManager.firstSeeker), GameManager.seekerDelayTime, this.plugin);
-            final int delayID = this.plugin.getServer().getScheduler().scheduleSyncRepeatingTask((Plugin)this.plugin, (Runnable)GameManager.sd, 0L, 20L);
+            final int delayID = this.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(this.plugin, GameManager.sd, 0L, 20L);
             GameManager.sd.setID(delayID);
         }
         else {
-            this.plugin.getServer().getScheduler().scheduleSyncDelayedTask((Plugin)this.plugin, (Runnable)new Runnable() {
+            this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin, new Runnable() {
                 @Override
                 public void run() {
                     GameManager.this.plugin.SBS.addPlayerToGame(GameManager.this.plugin, GameManager.this.plugin.getServer().getPlayerExact(GameManager.firstSeeker));
@@ -176,7 +176,7 @@ public class GameManager
         this.givePlayersLoadOuts(GameManager.currentGameArena);
         this.disguisePlayers(GameManager.currentGameArena);
         GameManager.gameStatus = true;
-        this.plugin.getServer().getScheduler().scheduleSyncDelayedTask((Plugin)this.plugin, (Runnable)new Runnable() {
+        this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin, new Runnable() {
             @Override
             public void run() {
                 for (final String hider : GameManager.hiders) {
@@ -209,7 +209,7 @@ public class GameManager
                 GameManager.SB.updateTab(this.plugin.getServer().getPlayer(name));
             }
         }
-        GameManager.SCOREBOARDTASKID = this.plugin.getServer().getScheduler().scheduleSyncRepeatingTask((Plugin)this.plugin, (Runnable)new Runnable() {
+        GameManager.SCOREBOARDTASKID = this.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(this.plugin, new Runnable() {
             @Override
             public void run() {
                 for (final String name : GameManager.seekers) {
@@ -259,7 +259,7 @@ public class GameManager
     private void freshPlayers() {
         for (final String s : GameManager.playersWaiting) {
             if (this.plugin.getServer().getPlayer(s) != null) {
-                if (this.plugin.getServer().getPlayer(s).getGameMode().equals((Object)GameMode.CREATIVE)) {
+                if (this.plugin.getServer().getPlayer(s).getGameMode().equals(GameMode.CREATIVE)) {
                     this.plugin.getServer().getPlayer(s).setGameMode(GameMode.SURVIVAL);
                 }
                 PlayerManagement.gameStartPlayer(this.plugin.getServer().getPlayer(s));
@@ -324,7 +324,7 @@ public class GameManager
                 break;
             }
         }
-        final ItemMessage im = new ItemMessage((Plugin)this.plugin);
+        final ItemMessage im = new ItemMessage(this.plugin);
         String message = MessageBank.CREDITS_EARN_POPUP.getMsg();
         message = message.replaceAll("credits", amount + " " + ShopSettings.currencyName);
         im.sendMessage(p, ChatColor.translateAlternateColorCodes('&', message));
@@ -381,7 +381,7 @@ public class GameManager
                             }
                         }
                         else {
-                            GameManager.this.plugin.getServer().getScheduler().scheduleSyncDelayedTask((Plugin)GameManager.this.plugin, (Runnable)new Runnable() {
+                            GameManager.this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(GameManager.this.plugin, new Runnable() {
                                 @Override
                                 public void run() {
                                     if (GameManager.this.plugin.getServer().getPlayer(hider2) != null && GameManager.this.plugin.dm.isDisguised(GameManager.this.plugin.getServer().getPlayer(hider2))) {
@@ -410,7 +410,7 @@ public class GameManager
                             }
                         }
                         else {
-                            GameManager.this.plugin.getServer().getScheduler().scheduleSyncDelayedTask((Plugin)GameManager.this.plugin, (Runnable)new Runnable() {
+                            GameManager.this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(GameManager.this.plugin, new Runnable() {
                                 @Override
                                 public void run() {
                                     if (GameManager.this.plugin.getServer().getPlayerExact(seeker) != null && GameManager.this.plugin.dm.isDisguised(GameManager.this.plugin.getServer().getPlayerExact(seeker))) {
@@ -509,19 +509,19 @@ public class GameManager
             }
         };
         if (shutdown) {
-            endGameTask.runTask((Plugin)this.plugin);
+            endGameTask.runTask(this.plugin);
         }
         else {
-            endGameTask.runTaskLater((Plugin)this.plugin, 20L);
+            endGameTask.runTaskLater(this.plugin, 20L);
         }
     }
     
     private void respawnQuick(final Player player) {
-        this.plugin.getServer().getScheduler().scheduleSyncDelayedTask((Plugin)this.plugin, (Runnable)new Runnable() {
+        this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin, new Runnable() {
             @Override
             public void run() {
                 final PacketContainer packet = new PacketContainer(PacketType.Play.Client.CLIENT_COMMAND);
-                packet.getClientCommands().write(0, (Object)EnumWrappers.ClientCommand.PERFORM_RESPAWN);
+                packet.getClientCommands().write(0, EnumWrappers.ClientCommand.PERFORM_RESPAWN);
                 try {
                     ProtocolLibrary.getProtocolManager().recieveClientPacket(player, packet);
                 }
@@ -584,7 +584,7 @@ public class GameManager
             }
             else {
                 PlayerManagement.gameRestorePlayer(this.plugin.getServer().getPlayer(name));
-                this.plugin.getServer().getScheduler().scheduleSyncDelayedTask((Plugin)this.plugin, (Runnable)new Runnable() {
+                this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin, new Runnable() {
                     @Override
                     public void run() {
                         if (GameManager.this.plugin.getServer().getPlayer(name) != null && GameManager.this.plugin.dm.isDisguised(GameManager.this.plugin.getServer().getPlayer(name))) {
@@ -677,7 +677,7 @@ public class GameManager
                 }
                 this.LT = new LobbyThread(this.plugin, GameManager.lobbyTime);
                 this.LT.isRunning = true;
-                final int id = this.plugin.getServer().getScheduler().scheduleSyncRepeatingTask((Plugin)this.plugin, (Runnable)this.LT, 0L, 20L);
+                final int id = this.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(this.plugin, this.LT, 0L, 20L);
                 this.LT.setId(id);
             }
         }
@@ -717,7 +717,7 @@ public class GameManager
                 }
                 this.LT = new LobbyThread(this.plugin, GameManager.lobbyTime);
                 this.LT.isRunning = true;
-                final int id = this.plugin.getServer().getScheduler().scheduleSyncRepeatingTask((Plugin)this.plugin, (Runnable)this.LT, 0L, 20L);
+                final int id = this.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(this.plugin, this.LT, 0L, 20L);
                 this.LT.setId(id);
             }
         }

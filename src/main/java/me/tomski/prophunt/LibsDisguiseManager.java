@@ -27,31 +27,31 @@ public class LibsDisguiseManager extends DisguiseManager
     
     private Disguise getLibsDisguise(final SimpleDisguise sd) {
         if (sd.getEntityType() == null) {
-            return (Disguise)new MiscDisguise(DisguiseType.FALLING_BLOCK, (int)sd.getID(), sd.getDamage());
+            return new MiscDisguise(DisguiseType.FALLING_BLOCK, sd.getID(), sd.getDamage());
         }
-        return (Disguise)new MobDisguise(DisguiseType.getType(sd.getEntityType()));
+        return new MobDisguise(DisguiseType.getType(sd.getEntityType()));
     }
     
     @Override
     public boolean isDisguised(final Player p) {
-        return DisguiseAPI.isDisguised((Entity)p);
+        return DisguiseAPI.isDisguised(p);
     }
     
     @Override
     public void disguisePlayer(final Player p, final SimpleDisguise d) {
         final Disguise dis = this.getLibsDisguise(d);
         dis.setViewSelfDisguise(true);
-        DisguiseAPI.disguiseToAll((Entity)p, dis);
+        DisguiseAPI.disguiseToAll(p, dis);
     }
     
     @Override
     public void undisguisePlayer(final Player p) {
-        DisguiseAPI.undisguiseToAll((Entity)p);
+        DisguiseAPI.undisguiseToAll(p);
     }
     
     @Override
     public String getDisguiseName(final Player p) {
-        return DisguiseAPI.getDisguise((Entity)p).getType().equals((Object)DisguiseType.FALLING_BLOCK) ? this.parseIdToName(((MiscDisguise)DisguiseAPI.getDisguise((Entity)p)).getId()) : DisguiseAPI.getDisguise((Entity)p).getEntity().getType().name();
+        return DisguiseAPI.getDisguise(p).getType().equals(DisguiseType.FALLING_BLOCK) ? this.parseIdToName(((MiscDisguise)DisguiseAPI.getDisguise(p)).getId()) : DisguiseAPI.getDisguise(p).getEntity().getType().name();
     }
     
     private String parseIdToName(final int id) {
@@ -83,8 +83,8 @@ public class LibsDisguiseManager extends DisguiseManager
     
     @Override
     public SimpleDisguise getSimpleDisguise(final Player p) {
-        if (DisguiseAPI.getDisguise((Entity)p).getType().equals((Object)DisguiseType.FALLING_BLOCK)) {
-            return new SimpleDisguise(((MiscDisguise)DisguiseAPI.getDisguise((Entity)p)).getId(), ((MiscDisguise)DisguiseAPI.getDisguise((Entity)p)).getData(), null);
+        if (DisguiseAPI.getDisguise(p).getType().equals(DisguiseType.FALLING_BLOCK)) {
+            return new SimpleDisguise(((MiscDisguise)DisguiseAPI.getDisguise(p)).getId(), ((MiscDisguise)DisguiseAPI.getDisguise(p)).getData(), null);
         }
         return null;
     }

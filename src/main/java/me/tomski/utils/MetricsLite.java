@@ -33,10 +33,10 @@ public class MetricsLite
         }
         this.plugin = plugin;
         this.configurationFile = this.getConfigFile();
-        (this.configuration = YamlConfiguration.loadConfiguration(this.configurationFile)).addDefault("opt-out", (Object)false);
-        this.configuration.addDefault("guid", (Object)UUID.randomUUID().toString());
-        this.configuration.addDefault("debug", (Object)false);
-        if (this.configuration.get("guid", (Object)null) == null) {
+        (this.configuration = YamlConfiguration.loadConfiguration(this.configurationFile)).addDefault("opt-out", false);
+        this.configuration.addDefault("guid", UUID.randomUUID().toString());
+        this.configuration.addDefault("debug", false);
+        if (this.configuration.get("guid", null) == null) {
             this.configuration.options().header("http://mcstats.org").copyDefaults(true);
             this.configuration.save(this.configurationFile);
         }
@@ -52,7 +52,7 @@ public class MetricsLite
             if (this.task != null) {
                 return true;
             }
-            this.task = this.plugin.getServer().getScheduler().runTaskTimerAsynchronously(this.plugin, (Runnable)new Runnable() {
+            this.task = this.plugin.getServer().getScheduler().runTaskTimerAsynchronously(this.plugin, new Runnable() {
                 private boolean firstPost = true;
                 
                 @Override
@@ -102,7 +102,7 @@ public class MetricsLite
     public void enable() throws IOException {
         synchronized (this.optOutLock) {
             if (this.isOptOut()) {
-                this.configuration.set("opt-out", (Object)false);
+                this.configuration.set("opt-out", false);
                 this.configuration.save(this.configurationFile);
             }
             if (this.task == null) {
@@ -114,7 +114,7 @@ public class MetricsLite
     public void disable() throws IOException {
         synchronized (this.optOutLock) {
             if (!this.isOptOut()) {
-                this.configuration.set("opt-out", (Object)true);
+                this.configuration.set("opt-out", true);
                 this.configuration.save(this.configurationFile);
             }
             if (this.task != null) {

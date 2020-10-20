@@ -55,7 +55,7 @@ public class PropHunt extends JavaPlugin implements Listener
             this.init();
             if (this.shouldDisable) {
                 this.getLogger().warning("Disabling plugin. Reason: DisguiseCraft or LibsDisguises not found, please install then reboot");
-                this.getPluginLoader().disablePlugin((Plugin)this);
+                this.getPluginLoader().disablePlugin(this);
                 return;
             }
         }
@@ -63,7 +63,7 @@ public class PropHunt extends JavaPlugin implements Listener
             e1.printStackTrace();
         }
         try {
-            final MetricsLite metrics = new MetricsLite((Plugin)this);
+            final MetricsLite metrics = new MetricsLite(this);
             metrics.start();
         }
         catch (IOException e2) {
@@ -90,7 +90,7 @@ public class PropHunt extends JavaPlugin implements Listener
         this.AM = new ArenaManager(this);
         if (this.getServer().getPluginManager().isPluginEnabled("DisguiseCraft")) {
             this.dm = new DisguiseCraftManager(this);
-            this.getServer().getPluginManager().registerEvents((Listener)this.dm, (Plugin)this);
+            this.getServer().getPluginManager().registerEvents(this.dm, this);
         }
         else {
             if (!this.getServer().getPluginManager().isPluginEnabled("LibsDisguises")) {
@@ -103,7 +103,7 @@ public class PropHunt extends JavaPlugin implements Listener
         this.loadProtocolManager();
         final ProtocolTask pt = new ProtocolTask(this);
         pt.initProtocol();
-        this.getServer().getPluginManager().registerEvents((Listener)pt, (Plugin)this);
+        this.getServer().getPluginManager().registerEvents(pt, this);
         this.loadConfigSettings();
         AutomationSettings.initSettings(this);
         this.LM = new LanguageManager(this);
@@ -112,16 +112,16 @@ public class PropHunt extends JavaPlugin implements Listener
         if (GameManager.useSideStats) {
             this.SBS = new SideBarStats(this);
             final SideTabTimer stt = new SideTabTimer(this.SBS);
-            this.getServer().getScheduler().scheduleSyncRepeatingTask((Plugin)this, (Runnable)stt, 20L, 20L);
+            this.getServer().getScheduler().scheduleSyncRepeatingTask(this, stt, 20L, 20L);
         }
-        this.getServer().getPluginManager().registerEvents((Listener)new PropHuntListener(this, this.GM), (Plugin)this);
-        this.getServer().getPluginManager().registerEvents((Listener)new SetupListener(this), (Plugin)this);
-        this.getServer().getPluginManager().registerEvents((Listener)new ServerManager(this), (Plugin)this);
+        this.getServer().getPluginManager().registerEvents(new PropHuntListener(this, this.GM), this);
+        this.getServer().getPluginManager().registerEvents(new SetupListener(this), this);
+        this.getServer().getPluginManager().registerEvents(new ServerManager(this), this);
         this.usingCustomTab();
         if (this.usingPropHuntSigns()) {
-            this.getServer().getMessenger().registerOutgoingPluginChannel((Plugin)this, "BungeeCord");
+            this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
             final Pinger ping = new Pinger(this);
-            this.getServer().getScheduler().scheduleSyncRepeatingTask((Plugin)this, (Runnable)new PingTimer(ping), 20L, (long)BungeeSettings.pingInterval);
+            this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new PingTimer(ping), 20L, BungeeSettings.pingInterval);
             this.getLogger().info("Ping timer initiated at " + BungeeSettings.pingInterval + " ticks per ping");
         }
         this.loadEconomySettings();
@@ -627,20 +627,20 @@ public class PropHunt extends JavaPlugin implements Listener
             return;
         }
         if (type.equalsIgnoreCase("set")) {
-            this.setCurrencyBalance((CommandSender)p, playerName, Integer.parseInt(amount));
+            this.setCurrencyBalance(p, playerName, Integer.parseInt(amount));
         }
         else if (type.equalsIgnoreCase("give")) {
-            int currentAmount = this.getCurrencyBalance((CommandSender)p, playerName);
+            int currentAmount = this.getCurrencyBalance(p, playerName);
             currentAmount += Math.abs(Integer.parseInt(amount));
-            this.setCurrencyBalance((CommandSender)p, playerName, currentAmount);
+            this.setCurrencyBalance(p, playerName, currentAmount);
         }
         else if (type.equalsIgnoreCase("remove")) {
-            int currentAmount = this.getCurrencyBalance((CommandSender)p, playerName);
+            int currentAmount = this.getCurrencyBalance(p, playerName);
             currentAmount -= Math.abs(Integer.parseInt(amount));
             if (currentAmount <= 0) {
                 currentAmount = 0;
             }
-            this.setCurrencyBalance((CommandSender)p, playerName, currentAmount);
+            this.setCurrencyBalance(p, playerName, currentAmount);
         }
     }
     
@@ -700,7 +700,7 @@ public class PropHunt extends JavaPlugin implements Listener
     public int loadBlockDisguises() {
         int i = 0;
         if (this.getConfig().contains("block-disguises")) {
-            final List<String> blockIds = (List<String>)this.getConfig().getStringList("block-disguises");
+            final List<String> blockIds = this.getConfig().getStringList("block-disguises");
             for (final String item : blockIds) {
                 DisguiseManager.blockDisguises.put(i, new SimpleDisguise(item));
                 ++i;
@@ -885,7 +885,7 @@ public class PropHunt extends JavaPlugin implements Listener
                 TOTEnchants.put(Enchantment.getById(ENCHANTID), ENCHANTLEVEL);
             }
             stack = new ItemStack(itemint, 1);
-            stack.addUnsafeEnchantments((Map)TOTEnchants);
+            stack.addUnsafeEnchantments(TOTEnchants);
             return stack;
         }
         final String[] damagesplit = s.split(":");
@@ -957,7 +957,7 @@ public class PropHunt extends JavaPlugin implements Listener
         int i = 0;
         final Map<Integer, SimpleDisguise> disguiseMap = new HashMap<Integer, SimpleDisguise>();
         if (this.getConfig().contains("CustomArenaConfigs." + arenaName + ".block-disguises")) {
-            final List<String> blockIds = (List<String>)this.getConfig().getStringList("CustomArenaConfigs." + arenaName + ".block-disguises");
+            final List<String> blockIds = this.getConfig().getStringList("CustomArenaConfigs." + arenaName + ".block-disguises");
             for (final String item : blockIds) {
                 disguiseMap.put(i, new SimpleDisguise(item));
                 ++i;
@@ -1119,7 +1119,7 @@ public class PropHunt extends JavaPlugin implements Listener
             }
         }
         else {
-            this.getServer().getScheduler().scheduleSyncDelayedTask((Plugin)this, (Runnable)new Runnable() {
+            this.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
                 @Override
                 public void run() {
                     for (final Player viewer : owner.getServer().getOnlinePlayers()) {

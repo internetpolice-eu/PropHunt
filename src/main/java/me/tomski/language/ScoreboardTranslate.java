@@ -97,11 +97,11 @@ public class ScoreboardTranslate
         if (this.customLanguageFile == null) {
             this.customLanguageFile = new File(this.plugin.getDataFolder(), "ScoreboardTranslate.yml");
         }
-        this.translateConfig = (FileConfiguration)YamlConfiguration.loadConfiguration(this.customLanguageFile);
+        this.translateConfig = YamlConfiguration.loadConfiguration(this.customLanguageFile);
         final InputStream defConfigStream = this.plugin.getResource("ScoreboardTranslate.yml");
         if (defConfigStream != null) {
             final YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
-            this.translateConfig.setDefaults((Configuration)defConfig);
+            this.translateConfig.setDefaults(defConfig);
         }
     }
     

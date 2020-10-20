@@ -39,7 +39,7 @@ public class DisguiseCraftManager extends DisguiseManager implements Listener
             data.add("blockID:" + sd.getID());
             data.add("blockData:" + sd.getDamage());
             final int id = this.getDcAPI().newEntityID();
-            return new Disguise(id, (LinkedList)data, DisguiseType.FallingBlock);
+            return new Disguise(id, data, DisguiseType.FallingBlock);
         }
         final int id2 = this.getDcAPI().newEntityID();
         return new Disguise(id2, "", DisguiseType.fromString(sd.getEntityType().name()));
@@ -107,7 +107,7 @@ public class DisguiseCraftManager extends DisguiseManager implements Listener
     @Override
     public void toggleBlockLock(final PlayerToggleSneakEvent e) {
         final Disguise d = this.getDcAPI().getDisguise(e.getPlayer());
-        if (d.type.equals((Object)DisguiseType.FallingBlock)) {
+        if (d.type.equals(DisguiseType.FallingBlock)) {
             if (e.isSneaking()) {
                 d.addSingleData("blocklock");
                 PropHuntMessaging.sendMessage(e.getPlayer(), MessageBank.TOGGLE_BLOCK_LOCK_ON.getMsg());
@@ -121,7 +121,7 @@ public class DisguiseCraftManager extends DisguiseManager implements Listener
     
     @Override
     public SimpleDisguise getSimpleDisguise(final Player p) {
-        if (this.dcAPI.getDisguise(p).type.equals((Object)DisguiseType.FallingBlock)) {
+        if (this.dcAPI.getDisguise(p).type.equals(DisguiseType.FallingBlock)) {
             return new SimpleDisguise(this.dcAPI.getDisguise(p).getBlockID(), this.dcAPI.getDisguise(p).getBlockData(), null);
         }
         return null;

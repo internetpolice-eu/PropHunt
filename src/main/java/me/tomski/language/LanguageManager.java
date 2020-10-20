@@ -30,7 +30,7 @@ public class LanguageManager
             if (LanguageManager.currentLanguageFile.contains(key)) {
                 continue;
             }
-            LanguageManager.currentLanguageFile.set(key, (Object)this.languageConfig.getString(key));
+            LanguageManager.currentLanguageFile.set(key, this.languageConfig.getString(key));
         }
         LanguageManager.currentLanguageFile.save(this.customConfigFile);
     }
@@ -47,18 +47,18 @@ public class LanguageManager
         if (this.customConfigFile == null) {
             this.customConfigFile = new File(this.plugin.getDataFolder(), name);
         }
-        LanguageManager.currentLanguageFile = (FileConfiguration)YamlConfiguration.loadConfiguration(this.customConfigFile);
+        LanguageManager.currentLanguageFile = YamlConfiguration.loadConfiguration(this.customConfigFile);
     }
     
     public void reloadLanguage() {
         if (this.customLanguageFile == null) {
             this.customLanguageFile = new File(this.plugin.getDataFolder(), "Language.yml");
         }
-        this.languageConfig = (FileConfiguration)YamlConfiguration.loadConfiguration(this.customLanguageFile);
+        this.languageConfig = YamlConfiguration.loadConfiguration(this.customLanguageFile);
         final InputStream defConfigStream = this.plugin.getResource("Language.yml");
         if (defConfigStream != null) {
             final YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
-            this.languageConfig.setDefaults((Configuration)defConfig);
+            this.languageConfig.setDefaults(defConfig);
         }
     }
     

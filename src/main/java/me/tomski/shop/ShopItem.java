@@ -40,7 +40,7 @@ public class ShopItem
         }
         final ItemStack stack = this.itemStack.clone();
         final ItemMeta newMeta = stack.getItemMeta();
-        newMeta.setLore((List)this.description);
+        newMeta.setLore(this.description);
         stack.setItemMeta(newMeta);
         i.addItem(new ItemStack[] { stack });
     }
@@ -78,7 +78,7 @@ public class ShopItem
             }
             case VAULT: {
                 if (this.plugin.vaultUtils.economy.getBalance(p.getName()) >= this.itemCost) {
-                    this.plugin.vaultUtils.economy.withdrawPlayer(p.getName(), (double)this.itemCost);
+                    this.plugin.vaultUtils.economy.withdrawPlayer(p.getName(), this.itemCost);
                     this.plugin.vaultUtils.permission.playerAdd(p, this.itemPermission);
                     PropHuntMessaging.sendMessage(p, MessageBank.PURCHASE_COMPLETE.getMsg() + this.itemName);
                     return true;

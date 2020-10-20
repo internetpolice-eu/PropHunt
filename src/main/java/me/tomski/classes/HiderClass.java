@@ -28,7 +28,7 @@ public class HiderClass
         p.getInventory().setChestplate(this.torso);
         p.getInventory().setLeggings(this.legs);
         p.getInventory().setBoots(this.boots);
-        p.addPotionEffects((Collection)this.peffects);
+        p.addPotionEffects(this.peffects);
         for (final ItemStack i : this.invent) {
             p.getInventory().addItem(new ItemStack[] { i });
         }

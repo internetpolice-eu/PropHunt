@@ -24,11 +24,11 @@ public class ShopManager
         this.itemShop = new ItemShop(this.plugin);
         this.loadoutChooser = new LoadoutChooser(this.plugin);
         this.blockChooser = new BlockChooser(this.plugin);
-        this.plugin.getServer().getPluginManager().registerEvents((Listener)this.mainShop, (Plugin)this.plugin);
-        this.plugin.getServer().getPluginManager().registerEvents((Listener)this.disguiseShop, (Plugin)this.plugin);
-        this.plugin.getServer().getPluginManager().registerEvents((Listener)this.itemShop, (Plugin)this.plugin);
-        this.plugin.getServer().getPluginManager().registerEvents((Listener)this.loadoutChooser, (Plugin)this.plugin);
-        this.plugin.getServer().getPluginManager().registerEvents((Listener)this.blockChooser, (Plugin)this.plugin);
+        this.plugin.getServer().getPluginManager().registerEvents(this.mainShop, this.plugin);
+        this.plugin.getServer().getPluginManager().registerEvents(this.disguiseShop, this.plugin);
+        this.plugin.getServer().getPluginManager().registerEvents(this.itemShop, this.plugin);
+        this.plugin.getServer().getPluginManager().registerEvents(this.loadoutChooser, this.plugin);
+        this.plugin.getServer().getPluginManager().registerEvents(this.blockChooser, this.plugin);
     }
     
     public MainShop getMainShop() {

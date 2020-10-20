@@ -70,19 +70,19 @@ public class ItemMessage
     private long getNextId(final Player player) {
         long id;
         if (player.hasMetadata("item-message:id")) {
-            final List<MetadataValue> l = (List<MetadataValue>)player.getMetadata("item-message:id");
+            final List<MetadataValue> l = player.getMetadata("item-message:id");
             id = ((l.size() >= 1) ? l.get(0).asLong() : 1L);
         }
         else {
             id = 1L;
         }
-        player.setMetadata("item-message:id", (MetadataValue)new FixedMetadataValue(this.plugin, (Object)(id + 1L)));
+        player.setMetadata("item-message:id", new FixedMetadataValue(this.plugin, id + 1L));
         return id;
     }
     
     private PriorityQueue<MessageRecord> getMessageQueue(final Player player) {
         if (!player.hasMetadata("item-message:msg-queue")) {
-            player.setMetadata("item-message:msg-queue", (MetadataValue)new FixedMetadataValue(this.plugin, (Object)new PriorityQueue()));
+            player.setMetadata("item-message:msg-queue", new FixedMetadataValue(this.plugin, new PriorityQueue()));
         }
         for (final MetadataValue v : player.getMetadata("item-message:msg-queue")) {
             if (v.value() instanceof PriorityQueue) {
@@ -107,14 +107,14 @@ public class ItemMessage
         }
         if (other.getClass().getName().endsWith(".ItemMessage$MessageRecord")) {
             try {
-                final Method m1 = other.getClass().getMethod("getId", (Class<?>[])new Class[0]);
-                final Method m2 = other.getClass().getMethod("getPriority", (Class<?>[])new Class[0]);
-                final Method m3 = other.getClass().getMethod("getMessage", (Class<?>[])new Class[0]);
-                final Method m4 = other.getClass().getMethod("getDuration", (Class<?>[])new Class[0]);
-                final long otherId = (long)m1.invoke(other, new Object[0]);
-                final int otherPriority = (int)m2.invoke(other, new Object[0]);
+                final Method m1 = other.getClass().getMethod("getId", new Class[0]);
+                final Method m2 = other.getClass().getMethod("getPriority", new Class[0]);
+                final Method m3 = other.getClass().getMethod("getMessage", new Class[0]);
+                final Method m4 = other.getClass().getMethod("getDuration", new Class[0]);
+                final long otherId = (Long)m1.invoke(other, new Object[0]);
+                final int otherPriority = (Integer)m2.invoke(other, new Object[0]);
                 final String otherMessage = (String)m3.invoke(other, new Object[0]);
-                final int otherDuration = (int)m4.invoke(other, new Object[0]);
+                final int otherDuration = (Integer)m4.invoke(other, new Object[0]);
                 return new MessageRecord(otherMessage, otherDuration, otherPriority, otherId);
             }
             catch (Exception e) {
@@ -137,7 +137,7 @@ public class ItemMessage
             this.iterations = Math.max(1, rec.getDuration() * 20 / 20);
             this.slot = player.getInventory().getHeldItemSlot();
             this.message = rec.getMessage();
-            Bukkit.getPluginManager().registerEvents((Listener)this, ItemMessage.this.plugin);
+            Bukkit.getPluginManager().registerEvents(this, ItemMessage.this.plugin);
         }
         
         @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -186,7 +186,7 @@ public class ItemMessage
         
         private void cleanup() {
             this.cancel();
-            HandlerList.unregisterAll((Listener)this);
+            HandlerList.unregisterAll(this);
         }
         
         private ItemStack makeStack(final Player player) {
@@ -206,8 +206,8 @@ public class ItemMessage
         
         private void sendItemSlotChange(final Player player, final int slot, final ItemStack stack) {
             final PacketContainer setSlot = new PacketContainer(103);
-            setSlot.getIntegers().write(0, (Object)0).write(1, (Object)(slot + 36));
-            setSlot.getItemModifier().write(0, (Object)stack);
+            setSlot.getIntegers().write(0, 0).write(1, slot + 36);
+            setSlot.getItemModifier().write(0, stack);
             try {
                 ProtocolLibrary.getProtocolManager().sendServerPacket(player, setSlot);
             }

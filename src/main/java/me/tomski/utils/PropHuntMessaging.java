@@ -99,7 +99,7 @@ public class PropHuntMessaging
     }
     
     private static String parseChatColors(final String m) {
-        return m.replaceAll("&", "§");
+        return m.replaceAll("&", "\u00A7");
     }
     
     public static void sendAvailableArenas(final Player p, final Map<String, Arena> playableArenas) {

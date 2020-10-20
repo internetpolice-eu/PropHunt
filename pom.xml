@@ -6,7 +6,7 @@
 
     <groupId>me.tomski</groupId>
     <artifactId>PropHunt</artifactId>
-    <version>1.43-SNAPSHOT</version>
+    <version>1.44-SNAPSHOT</version>
     <name>PropHunt</name>
 
     <build>
@@ -57,27 +57,17 @@
 
     <repositories>
         <repository>
-            <id>bukkit-repo</id>
-            <name>Bukkit Repo</name>
-            <url>http://repo.bukkit.org/content/groups/public/</url>
-        </repository>
-        <repository>
             <id>comphenix-rep</id>
             <name>Comphenix Repository</name>
             <url>http://repo.comphenix.net/content/groups/public/</url>
         </repository>
         <repository>
-            <id>disguisecraft-repo</id>
-            <name>DisguiseCraft Repo</name>
-            <url>http://build.yu8.me:8080/plugin/repository/everything/</url>
-        </repository>
-        <repository>
-            <id>vault-repo</id>
-            <url>http://ci.herocraftonline.com/plugin/repository/everything/</url>
-        </repository>
-        <repository>
             <id>libs-disguises-repo</id>
             <url>http://repo.md-5.net/content/groups/public/</url>
+        </repository>
+        <repository>
+            <id>internetpolice-repo</id>
+            <url>https://repo.internetpolice.eu/deprepo/</url>
         </repository>
     </repositories>
 
@@ -105,7 +95,7 @@
         <dependency>
             <groupId>net.milkbowl.vault</groupId>
             <artifactId>Vault</artifactId>
-            <version>LATEST</version>
+            <version>1.4.1</version>
         </dependency>
         <dependency>
             <groupId>LibsDisguises</groupId>
@@ -113,6 +103,4 @@
             <version>7.6.3</version>
         </dependency>
     </dependencies>
-
-
 </project>

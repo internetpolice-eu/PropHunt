@@ -89,11 +89,11 @@ public class ArenaStorage
         if (this.customConfigFile == null) {
             this.customConfigFile = new File(this.plugin.getDataFolder(), "StorageFile.yml");
         }
-        this.StorageFilef = (FileConfiguration)YamlConfiguration.loadConfiguration(this.customConfigFile);
+        this.StorageFilef = YamlConfiguration.loadConfiguration(this.customConfigFile);
         final InputStream defConfigStream = this.plugin.getResource("StorageFile.yml");
         if (defConfigStream != null) {
             final YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
-            this.StorageFilef.setDefaults((Configuration)defConfig);
+            this.StorageFilef.setDefaults(defConfig);
         }
     }
     

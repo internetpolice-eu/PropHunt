@@ -26,7 +26,7 @@ public enum CustomItem
     
     public CustomItem getFromItemStack(final ItemStack testStack) {
         for (final CustomItem item : values()) {
-            if (testStack.getType().equals((Object)item.getItem().getType()) && testStack.getData().getData() == item.getItem().getData().getData()) {
+            if (testStack.getType().equals(item.getItem().getType()) && testStack.getData().getData() == item.getItem().getData().getData()) {
                 return item;
             }
         }

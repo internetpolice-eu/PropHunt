@@ -26,7 +26,7 @@ public class BlockChooser implements Listener
             PropHuntMessaging.sendMessage(p, MessageBank.NOT_IN_LOBBY.getMsg());
             return;
         }
-        final Inventory inv = Bukkit.createInventory((InventoryHolder)p, this.getShopSize(this.plugin.getShopSettings().blockChoices.size()), MessageBank.DISGUISE_NAME.getMsg());
+        final Inventory inv = Bukkit.createInventory(p, this.getShopSize(this.plugin.getShopSettings().blockChoices.size()), MessageBank.DISGUISE_NAME.getMsg());
         for (final ShopItem sI : this.plugin.getShopSettings().blockChoices) {
             sI.addToInventory(inv, p);
         }
@@ -42,10 +42,10 @@ public class BlockChooser implements Listener
                 e.setCancelled(true);
                 return;
             }
-            if (e.getCurrentItem().getType().equals((Object)Material.AIR)) {
+            if (e.getCurrentItem().getType().equals(Material.AIR)) {
                 return;
             }
-            if (GameManager.playersWaiting.contains(((Player)e.getWhoClicked()).getName())) {
+            if (GameManager.playersWaiting.contains(e.getWhoClicked().getName())) {
                 DisguiseManager.preChosenDisguise.put((Player)e.getWhoClicked(), this.parseItemToDisguise(e.getCurrentItem()));
                 PropHuntMessaging.sendMessage((Player)e.getWhoClicked(), MessageBank.SHOP_CHOSEN_DISGUISE.getMsg() + e.getCurrentItem().getItemMeta().getDisplayName());
                 e.getView().close();

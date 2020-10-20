@@ -11,13 +11,13 @@ public class ArenaFileStructureWrapper
     }
     
     public static void translateToNewStorageFormat(final PropHunt plugin, final FileConfiguration storage, final Arena a) {
-        plugin.AS.getStorageFile().set("Arenas." + a.getArenaName(), (Object)null);
+        plugin.AS.getStorageFile().set("Arenas." + a.getArenaName(), null);
         plugin.AS.saveStorageFile();
-        plugin.AS.getStorageFile().set("Arenas." + a.getArenaName() + ".lobbySpawn", (Object)new LocationBox(a.getLobbySpawn()).box());
-        plugin.AS.getStorageFile().set("Arenas." + a.getArenaName() + ".seekerSpawn", (Object)new LocationBox(a.getSeekerSpawn()).box());
-        plugin.AS.getStorageFile().set("Arenas." + a.getArenaName() + ".hiderSpawn", (Object)new LocationBox(a.getHiderSpawn()).box());
-        plugin.AS.getStorageFile().set("Arenas." + a.getArenaName() + ".exitSpawn", (Object)new LocationBox(a.getExitSpawn()).box());
-        plugin.AS.getStorageFile().set("Arenas." + a.getArenaName() + ".spectatorSpawn", (Object)new LocationBox(a.getSpectatorSpawn()).box());
+        plugin.AS.getStorageFile().set("Arenas." + a.getArenaName() + ".lobbySpawn", new LocationBox(a.getLobbySpawn()).box());
+        plugin.AS.getStorageFile().set("Arenas." + a.getArenaName() + ".seekerSpawn", new LocationBox(a.getSeekerSpawn()).box());
+        plugin.AS.getStorageFile().set("Arenas." + a.getArenaName() + ".hiderSpawn", new LocationBox(a.getHiderSpawn()).box());
+        plugin.AS.getStorageFile().set("Arenas." + a.getArenaName() + ".exitSpawn", new LocationBox(a.getExitSpawn()).box());
+        plugin.AS.getStorageFile().set("Arenas." + a.getArenaName() + ".spectatorSpawn", new LocationBox(a.getSpectatorSpawn()).box());
         plugin.AS.saveStorageFile();
     }
 }
