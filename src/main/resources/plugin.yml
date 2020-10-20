@@ -1,0 +1,99 @@
+name: PropHunt
+main: me.tomski.prophunt.PropHunt
+version: 1.43
+depend: [ProtocolLib]
+softdepend: [DisguiseCraft, LibsDisguises ,TabAPI ,PropHuntSigns, Vault, Multiverse-Core]
+author: Tomski - Owner of Skicraft
+website: www.skicraft.enjin.com
+commands:
+    prophunt:
+        description: Use to manage PropHunt activities
+        aliases: [ph]
+        permission: prophunt.prophunt
+        permission-message: You dont have permission for PropHunt commands
+        usage: /ph /prophunt  for PropHunt commands!
+permissions:
+    prophunt.currency.*:
+        description: Gives access to all economy commands
+        children:
+            prophunt.currency.give: true
+            prophunt.currency.remove: true
+            prophunt.currency.set: true
+    prophunt.command.*:
+        description: Gives access to all user commands
+        children:
+            prophunt.command.join: true
+            prophunt.command.leave: true
+            prophunt.command.status: true
+            prophunt.command.spectate: true
+            prophunt.command.chooser: true
+            prophunt.command.shop: true
+            prophunt.prophunt: true
+    prophunt.hostcommand.*:
+        description: Gives access to all host commands
+        children:
+            prophunt.hostcommand.host: true
+            prophunt.hostcommand.start: true
+            prophunt.hostcommand.stop: true
+            prophunt.hostcommand.kick: true
+            prophunt.prophunt: true
+    prophunt.admin.*:
+        description: Gives access to all admin commands
+        children:
+            prophunt.admin.setup: true
+            prophunt.admin.delete: true
+            prophunt.admin.configreload: true
+    prophunt.prophunt:
+        default: op
+        description: Allows use of PropHunt commands!
+    prophunt.joinoverride:
+        default: op
+        description: Allows joining of full servers!
+    prophunt.hostcommand.kick:
+        default: op
+        description: Allows use of PropHunt Kick!
+    prophunt.hostcommand.host:
+        default: op
+        description: Allows use of PropHunt Host!
+    prophunt.hostcommand.start:
+        default: op
+        description: Allows use of PropHunt start!
+    prophunt.hostcommand.stop:
+        default: op
+        description: Allows use of PropHunt stop!
+    prophunt.command.join:
+        default: op
+        description: Allows use of PropHunt join!
+    prophunt.command.leave:
+        default: op
+        description: Allows use of PropHunt leave!
+    prophunt.command.spectate:
+        default: op
+        description: Allows use of PropHunt spectate!
+    prophunt.command.chooser:
+        default: op
+        description: Allows user of PropHunt chooser!
+    prophunt.command.shop:
+        default: op
+        description: Allows use of PropHunt shop!
+    prophunt.command.status:
+        default: op
+        description: Allows use of PropHunt status!
+    prophunt.admin.setup:
+        default: op
+        description: Allows use of PropHunt delete!
+    prophunt.admin.delete:
+        default: op
+        description: Allows use of PropHunt setup!
+    prophunt.admin.configreload:
+        default: op
+        description: Allows use of PropHunt configreload!
+    prophunt.currency.give:
+        default: op
+        description: Allows giving PropHunt credits
+    prophunt.currency.remove:
+        default: op
+        description: Allows removing PropHunt credits
+    prophunt.currency.set:
+        default: op
+        description: Allows setting PropHunt credits

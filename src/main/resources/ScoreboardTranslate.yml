@@ -1,0 +1,21 @@
+##### Translate file for the scoreboard
+# Translate the scoreboard?
+use-translate: false
+
+# Note char limit of <= 16, including colours!
+
+# Words to be translated
+Translate-Words:
+    Players: Players
+    Seekers: Seekers
+    Hiders: Hiders
+    Spectators: Spectators
+    Time-Left: TimeLeft
+    Starting-In: Starting in
+    Solid-Time: SolidTime
+    Solid: SOLID
+# Disguises to be translated
+Disguise-Translations:
+    WOODEN_DOOR: Wooden Door
+    SANDSTONE_STAIRS: Sandstone Stairs
+    NOTE_BLOCK: Note Block
