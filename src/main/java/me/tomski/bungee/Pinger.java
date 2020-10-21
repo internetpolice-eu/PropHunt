@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Collection;
 
 public class Pinger
 {
@@ -29,7 +30,7 @@ public class Pinger
     }
 
     public void sendServerDataEmpty() throws IOException {
-        if (this.sentData && this.plugin.getServer().getOnlinePlayers().length > 0) {
+        if (this.sentData && this.plugin.getServer().getOnlinePlayers().size() > 0) {
             final ByteArrayOutputStream b = new ByteArrayOutputStream();
             final DataOutputStream out = new DataOutputStream(b);
             out.writeUTF("Forward");
@@ -59,12 +60,13 @@ public class Pinger
             }
             out.writeShort(msgbytes.toByteArray().length);
             out.write(msgbytes.toByteArray());
-            this.plugin.getServer().getOnlinePlayers()[0].sendPluginMessage(this.plugin, "BungeeCord", b.toByteArray());
+            plugin.getServer().getOnlinePlayers().iterator().next().sendPluginMessage(
+                this.plugin, "BungeeCord", b.toByteArray());
         }
     }
 
     public void sendServerData() throws IOException {
-        if (this.plugin.getServer().getOnlinePlayers().length > 0) {
+        if (this.plugin.getServer().getOnlinePlayers().size() > 0) {
             final ByteArrayOutputStream b = new ByteArrayOutputStream();
             final DataOutputStream out = new DataOutputStream(b);
             out.writeUTF("Forward");
@@ -79,7 +81,7 @@ public class Pinger
             else {
                 msgout.writeInt(this.plugin.getServer().getMaxPlayers());
             }
-            msgout.writeInt(this.plugin.getServer().getOnlinePlayers().length);
+            msgout.writeInt(this.plugin.getServer().getOnlinePlayers().size());
             msgout.writeBoolean(GameManager.gameStatus);
             if (ServerManager.blockAccessWhilstInGame && GameManager.gameStatus) {
                 msgout.writeBoolean(false);
@@ -99,7 +101,8 @@ public class Pinger
             }
             out.writeShort(msgbytes.toByteArray().length);
             out.write(msgbytes.toByteArray());
-            this.plugin.getServer().getOnlinePlayers()[0].sendPluginMessage(this.plugin, "BungeeCord", b.toByteArray());
+            plugin.getServer().getOnlinePlayers().iterator().next().sendPluginMessage(
+                this.plugin, "BungeeCord", b.toByteArray());
         }
     }
 }

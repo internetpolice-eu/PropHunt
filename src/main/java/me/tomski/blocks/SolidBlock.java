@@ -12,6 +12,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
 
 public class SolidBlock
 {
@@ -83,7 +84,7 @@ public class SolidBlock
         plugin.showPlayer(this.owner, false);
     }
 
-    public void sendPacket(final Player[] players) throws InvocationTargetException {
+    public void sendPacket(Collection<? extends Player> players) throws InvocationTargetException {
         for (final Player p : players) {
             if (!p.equals(this.owner)) {
                 this.pm.sendServerPacket(p, this.blockChange);

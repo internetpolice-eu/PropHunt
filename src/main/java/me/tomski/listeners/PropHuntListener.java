@@ -598,7 +598,7 @@ public class PropHuntListener implements Listener
         if (GameManager.useSideStats) {
             this.PH.SBS.removeScoreboard(this.PH, e.getPlayer());
         }
-        if (BungeeSettings.usingBungee && this.PH.getServer().getOnlinePlayers().length == 1) {
+        if (BungeeSettings.usingBungee && this.PH.getServer().getOnlinePlayers().size() == 1) {
             final Pinger p = new Pinger(this.PH);
             p.sentData = true;
             p.sendServerDataEmpty();

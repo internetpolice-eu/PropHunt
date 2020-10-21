@@ -70,12 +70,11 @@
     <repositories>
         <repository>
             <id>comphenix-rep</id>
-            <name>Comphenix Repository</name>
-            <url>http://repo.comphenix.net/content/groups/public/</url>
+            <url>https://repo.dmulloy2.net/nexus/repository/public/</url>
         </repository>
         <repository>
             <id>libs-disguises-repo</id>
-            <url>http://repo.md-5.net/content/groups/public/</url>
+            <url>https://repo.md-5.net/content/groups/public/</url>
         </repository>
         <repository>
             <id>internetpolice-repo</id>
@@ -87,7 +86,7 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.7.2-R0.1-SNAPSHOT</version>
+            <version>1.7.10-R0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>pgDev</groupId>
@@ -96,8 +95,8 @@
         </dependency>
         <dependency>
             <groupId>com.comphenix.protocol</groupId>
-            <artifactId>ProtocolLib</artifactId>
-            <version>3.1.0</version>
+            <artifactId>ProtocolLib-Legacy</artifactId>
+            <version>3.7.0</version>
         </dependency>
         <dependency>
             <groupId>org.mcsg.double0negative.tabapi</groupId>

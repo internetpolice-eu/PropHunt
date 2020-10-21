@@ -47,7 +47,7 @@ public class ServerManager implements Listener
             }
             e.disallow(PlayerLoginEvent.Result.KICK_OTHER, ChatColor.translateAlternateColorCodes('&', MessageBank.BLOCK_ACCESS_IN_GAME.getMsg()));
         }
-        if (ServerManager.forceMaxPlayers && (!e.getPlayer().isOp() || e.getPlayer().hasPermission("prophunt.joinoverride")) && this.plugin.getServer().getOnlinePlayers().length >= ServerManager.forceMaxPlayersSize) {
+        if (ServerManager.forceMaxPlayers && (!e.getPlayer().isOp() || e.getPlayer().hasPermission("prophunt.joinoverride")) && this.plugin.getServer().getOnlinePlayers().size() >= ServerManager.forceMaxPlayersSize) {
             e.disallow(PlayerLoginEvent.Result.KICK_FULL, ChatColor.translateAlternateColorCodes('&', MessageBank.SERVER_FULL_MESSAGE.getMsg()));
         }
     }
