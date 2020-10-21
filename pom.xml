@@ -6,7 +6,7 @@
 
     <groupId>me.tomski</groupId>
     <artifactId>PropHunt</artifactId>
-    <version>1.44-SNAPSHOT</version>
+    <version>1.45-SNAPSHOT</version>
     <name>PropHunt</name>
 
     <properties>
@@ -77,6 +77,10 @@
             <url>https://repo.md-5.net/content/groups/public/</url>
         </repository>
         <repository>
+            <id>spigot-repo</id>
+            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+        </repository>
+        <repository>
             <id>internetpolice-repo</id>
             <url>https://repo.internetpolice.eu/deprepo/</url>
         </repository>
@@ -86,7 +90,7 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.7.10-R0.1-SNAPSHOT</version>
+            <version>1.8.8-R0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>pgDev</groupId>
@@ -106,7 +110,7 @@
         <dependency>
             <groupId>net.milkbowl.vault</groupId>
             <artifactId>Vault</artifactId>
-            <version>1.4.1</version>
+            <version>1.5.6</version>
         </dependency>
         <dependency>
             <groupId>LibsDisguises</groupId>

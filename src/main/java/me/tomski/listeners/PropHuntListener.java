@@ -109,9 +109,6 @@ public class PropHuntListener implements Listener
             case STORAGE_MINECART: {
                 return true;
             }
-            case LOCKED_CHEST: {
-                return true;
-            }
             case TRAPPED_CHEST: {
                 return true;
             }
