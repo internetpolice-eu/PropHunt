@@ -18,7 +18,6 @@ import me.tomski.prophuntstorage.ArenaStorage;
 import me.tomski.prophuntstorage.ShopConfig;
 import me.tomski.shop.ShopManager;
 import me.tomski.utils.LogFilter;
-import me.tomski.utils.MetricsLite;
 import me.tomski.utils.PingTimer;
 import me.tomski.utils.PropHuntMessaging;
 import me.tomski.utils.Reason;
@@ -79,13 +78,6 @@ public class PropHunt extends JavaPlugin implements Listener
         }
         catch (IOException e1) {
             e1.printStackTrace();
-        }
-        try {
-            final MetricsLite metrics = new MetricsLite(this);
-            metrics.start();
-        }
-        catch (IOException e2) {
-            e2.printStackTrace();
         }
         this.getServer().getLogger().setFilter(new LogFilter());
     }
