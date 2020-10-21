@@ -99,8 +99,8 @@
         </dependency>
         <dependency>
             <groupId>com.comphenix.protocol</groupId>
-            <artifactId>ProtocolLib-Legacy</artifactId>
-            <version>3.7.0</version>
+            <artifactId>ProtocolLib</artifactId>
+            <version>4.5.1</version>
         </dependency>
         <dependency>
             <groupId>org.mcsg.double0negative.tabapi</groupId>
@@ -115,7 +115,7 @@
         <dependency>
             <groupId>LibsDisguises</groupId>
             <artifactId>LibsDisguises</artifactId>
-            <version>8.2.5</version>
+            <version>8.6.8</version>
         </dependency>
     </dependencies>
 </project>
