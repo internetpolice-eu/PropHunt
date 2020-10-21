@@ -80,6 +80,7 @@ public class SolidBlock
         PropHuntListener.tempIgnoreUndisguise.remove(this.owner);
         this.sendPacket(plugin.getServer().getOnlinePlayers());
         plugin.dm.disguisePlayer(this.owner, this.d);
+        plugin.showPlayer(this.owner, false);
     }
 
     public void sendPacket(final Player[] players) throws InvocationTargetException {
