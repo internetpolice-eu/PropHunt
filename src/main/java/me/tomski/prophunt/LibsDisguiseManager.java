@@ -17,8 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
-public class LibsDisguiseManager extends DisguiseManager
-{
+public class LibsDisguiseManager extends DisguiseManager {
     private static PropHunt plugin;
     public static Map<Integer, SimpleDisguise> blockDisguises;
     public static Map<Player, SimpleDisguise> preChosenDisguise;
@@ -28,7 +27,6 @@ public class LibsDisguiseManager extends DisguiseManager
         super(plugin);
         final int i = plugin.loadBlockDisguises();
         plugin.getLogger().log(Level.INFO, "PropHunt: " + i + " disgiuses loaded");
-        DisguiseAPI.setViewDisguises(true);
     }
 
     private Disguise getLibsDisguise(final SimpleDisguise sd) {
@@ -96,8 +94,8 @@ public class LibsDisguiseManager extends DisguiseManager
     }
 
     static {
-        LibsDisguiseManager.blockDisguises = new HashMap<Integer, SimpleDisguise>();
-        LibsDisguiseManager.preChosenDisguise = new HashMap<Player, SimpleDisguise>();
-        LibsDisguiseManager.loadouts = new HashMap<Player, Loadout>();
+        LibsDisguiseManager.blockDisguises = new HashMap<>();
+        LibsDisguiseManager.preChosenDisguise = new HashMap<>();
+        LibsDisguiseManager.loadouts = new HashMap<>();
     }
 }
