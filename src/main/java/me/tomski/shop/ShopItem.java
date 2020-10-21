@@ -1,14 +1,17 @@
 package me.tomski.shop;
 
-import java.util.*;
-import org.bukkit.inventory.*;
-import org.bukkit.entity.*;
-import me.tomski.language.*;
-import org.bukkit.inventory.meta.*;
-import org.bukkit.*;
-import me.tomski.utils.*;
-import me.tomski.prophunt.*;
-import me.tomski.enums.*;
+import me.tomski.language.MessageBank;
+import me.tomski.prophunt.PropHunt;
+import me.tomski.prophunt.ShopSettings;
+import me.tomski.utils.PropHuntMessaging;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ShopItem
 {
@@ -18,7 +21,7 @@ public class ShopItem
     String itemPermission;
     List<String> description;
     private PropHunt plugin;
-    
+
     public ShopItem(final PropHunt plugin, final ItemStack stack, final String name, final int cost, final String permission) {
         this.plugin = plugin;
         this.itemStack = stack;
@@ -28,7 +31,7 @@ public class ShopItem
         this.itemStack = this.makeItem();
         this.description = new ArrayList<String>();
     }
-    
+
     public void addToInventory(final Inventory i, final Player p) {
         if (p.hasPermission(this.itemPermission)) {
             this.description.clear();
@@ -44,7 +47,7 @@ public class ShopItem
         stack.setItemMeta(newMeta);
         i.addItem(new ItemStack[] { stack });
     }
-    
+
     private ItemStack makeItem() {
         final ItemMeta im = this.itemStack.getItemMeta();
         final String name = this.itemStack.getType().name().toLowerCase().replaceAll("_", " ");
@@ -53,7 +56,7 @@ public class ShopItem
         this.itemStack.setItemMeta(im);
         return this.itemStack;
     }
-    
+
     public boolean buyItem(final Player p) {
         if (p.hasPermission(this.itemPermission)) {
             PropHuntMessaging.sendMessage(p, MessageBank.ALREADY_PURCHASED_ITEM.getMsg());
@@ -61,7 +64,7 @@ public class ShopItem
         }
         return this.attemptPurchase(p);
     }
-    
+
     private boolean attemptPurchase(final Player p) {
         switch (ShopSettings.economyType) {
             case PROPHUNT: {
@@ -91,7 +94,7 @@ public class ShopItem
             }
         }
     }
-    
+
     public ItemStack getItem() {
         return this.itemStack;
     }

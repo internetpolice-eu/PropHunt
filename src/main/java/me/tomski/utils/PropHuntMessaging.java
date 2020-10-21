@@ -1,27 +1,29 @@
 package me.tomski.utils;
 
-import org.bukkit.entity.*;
-import org.bukkit.*;
-import me.tomski.prophunt.*;
-import java.util.*;
-import me.tomski.arenas.*;
-import me.tomski.language.*;
+import me.tomski.arenas.Arena;
+import me.tomski.language.MessageBank;
+import me.tomski.prophunt.GameManager;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+
+import java.util.List;
+import java.util.Map;
 
 public class PropHuntMessaging
 {
     private static String prefix;
     private static String banner;
-    
+
     public static void sendMessage(final Player p, final String msg) {
         final String finalmsg = parseChatColors(PropHuntMessaging.prefix + msg);
         p.sendMessage(finalmsg);
     }
-    
+
     public static void broadcastMessage(final String msg) {
         final String finalmsg = parseChatColors(PropHuntMessaging.prefix + msg);
         Bukkit.broadcastMessage(finalmsg);
     }
-    
+
     public static void broadcastLobby(final String msg) {
         final String finalmsg = parseChatColors(PropHuntMessaging.prefix + msg);
         for (final String s : GameManager.playersWaiting) {
@@ -30,7 +32,7 @@ public class PropHuntMessaging
             }
         }
     }
-    
+
     public static void sendGameStatus(final Player p) {
         if (!GameManager.gameStatus && GameManager.isHosting) {
             p.sendMessage(parseChatColors(PropHuntMessaging.banner));
@@ -54,14 +56,14 @@ public class PropHuntMessaging
             p.sendMessage(parseChatColors("&d[&fTimeLeft&d]: &f" + GameManager.timeleft));
         }
     }
-    
+
     public static void sendEconomyHelp(final Player p) {
         p.sendMessage(parseChatColors(PropHuntMessaging.banner));
         p.sendMessage(parseChatColors("&b/ph currency <player> give <amount> &0- &6Grant credits"));
         p.sendMessage(parseChatColors("&b/ph currency <player> remove <amount> &0- &6Remove credits"));
         p.sendMessage(parseChatColors("&b/ph currency <player> set <amount> &0- &6Set credits"));
     }
-    
+
     public static void sendPlayerHelp(final Player p) {
         p.sendMessage(parseChatColors(PropHuntMessaging.banner));
         p.sendMessage(parseChatColors("&b/ph join &0- &6Join the current PropHunt game"));
@@ -73,7 +75,7 @@ public class PropHuntMessaging
         p.sendMessage(parseChatColors("&b/ph loadout &0- &6Open the loadout chooser"));
         p.sendMessage(parseChatColors("&b/ph balance &0- &6Check your PropHunt balance"));
     }
-    
+
     public static void sendHostHelp(final Player p) {
         sendPlayerHelp(p);
         p.sendMessage(parseChatColors("&b/ph host <arena> &0- &6Host a game of PropHunt"));
@@ -84,7 +86,7 @@ public class PropHuntMessaging
         p.sendMessage(parseChatColors("&b/ph delete <arena> &0- &4Admin Only command- delete!!"));
         p.sendMessage(parseChatColors("&b/ph currency &0- &4Currency commands!!"));
     }
-    
+
     public static void broadcastMessageToPlayers(final List<String> hiders, final List<String> seekers, final String msg) {
         for (final String hider : hiders) {
             if (Bukkit.getServer().getPlayer(hider) != null) {
@@ -97,11 +99,11 @@ public class PropHuntMessaging
             }
         }
     }
-    
+
     private static String parseChatColors(final String m) {
         return m.replaceAll("&", "\u00A7");
     }
-    
+
     public static void sendAvailableArenas(final Player p, final Map<String, Arena> playableArenas) {
         p.sendMessage(parseChatColors(PropHuntMessaging.banner));
         p.sendMessage(parseChatColors("&fPlayable arenas:"));
@@ -113,7 +115,7 @@ public class PropHuntMessaging
             p.sendMessage(parseChatColors("&6" + arenaName));
         }
     }
-    
+
     static {
         PropHuntMessaging.prefix = MessageBank.BRACKET_COLOUR.getMsg() + "[" + MessageBank.PROP_COLOUR.getMsg() + "Prop" + MessageBank.HUNT_COLOUR.getMsg() + "Hunt" + MessageBank.BRACKET_COLOUR.getMsg() + "]: &a";
         PropHuntMessaging.banner = "&60o0&0_______ &bPropHunt &0_______&60o0";

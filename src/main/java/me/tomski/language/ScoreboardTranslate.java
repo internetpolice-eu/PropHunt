@@ -1,11 +1,15 @@
 package me.tomski.language;
 
-import me.tomski.prophunt.*;
-import java.util.*;
-import org.bukkit.configuration.file.*;
-import org.bukkit.configuration.*;
-import java.io.*;
-import java.util.logging.*;
+import me.tomski.prophunt.PropHunt;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
 
 public class ScoreboardTranslate
 {
@@ -23,7 +27,7 @@ public class ScoreboardTranslate
     public String solid_Time_Translate;
     public String solid_Translate;
     public Map<String, String> disguise_Translations;
-    
+
     public ScoreboardTranslate(final PropHunt ph) throws IOException {
         this.usingTranslations = false;
         this.player_Translate = "Players";
@@ -40,7 +44,7 @@ public class ScoreboardTranslate
         this.saveTranslateFile();
         this.initTranslates();
     }
-    
+
     public void initTranslates() {
         if (!(this.usingTranslations = this.getTranslateFile().getBoolean("use-translate"))) {
             this.plugin.getLogger().info("Using default scoreboard messages");
@@ -77,12 +81,12 @@ public class ScoreboardTranslate
             this.disguise_Translations.put(keyy, this.maxLength(this.getTranslateFile().getString("Disguise-Translations." + keyy)));
         }
     }
-    
+
     private String maxLength(final String s) {
         final String finalS = (s.length() < 12) ? s : s.substring(0, 12);
         return finalS;
     }
-    
+
     public String getDisguiseTranslate(final String matName) {
         if (!this.usingTranslations) {
             return matName;
@@ -92,7 +96,7 @@ public class ScoreboardTranslate
         }
         return matName;
     }
-    
+
     public void reloadTranslate() {
         if (this.customLanguageFile == null) {
             this.customLanguageFile = new File(this.plugin.getDataFolder(), "ScoreboardTranslate.yml");
@@ -104,14 +108,14 @@ public class ScoreboardTranslate
             this.translateConfig.setDefaults(defConfig);
         }
     }
-    
+
     public FileConfiguration getTranslateFile() {
         if (this.translateConfig == null) {
             this.reloadTranslate();
         }
         return this.translateConfig;
     }
-    
+
     public void saveTranslateFile() {
         if (this.translateConfig == null || this.customLanguageFile == null) {
             return;

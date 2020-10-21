@@ -1,24 +1,41 @@
 package me.tomski.prophunt;
 
-import org.bukkit.entity.*;
-import me.tomski.classes.*;
-import java.util.logging.*;
-import me.tomski.language.*;
-import org.bukkit.plugin.*;
-import me.tomski.arenas.*;
-import me.tomski.objects.*;
-import org.bukkit.scheduler.*;
-import me.tomski.utils.*;
-import me.tomski.blocks.*;
-import java.lang.reflect.*;
-import me.tomski.bungee.*;
-import java.io.*;
-import com.comphenix.protocol.events.*;
-import com.comphenix.protocol.wrappers.*;
-import com.comphenix.protocol.*;
-import org.bukkit.*;
-import java.util.*;
-import me.tomski.enums.*;
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.wrappers.EnumWrappers;
+import me.tomski.arenas.Arena;
+import me.tomski.arenas.ArenaManager;
+import me.tomski.blocks.SolidBlock;
+import me.tomski.bungee.Pinger;
+import me.tomski.classes.HiderClass;
+import me.tomski.classes.SeekerClass;
+import me.tomski.language.LanguageManager;
+import me.tomski.language.MessageBank;
+import me.tomski.utils.DeSolidifyThread;
+import me.tomski.utils.GameTimer;
+import me.tomski.utils.ItemMessage;
+import me.tomski.utils.LobbyThread;
+import me.tomski.utils.PHScoreboard;
+import me.tomski.utils.PropHuntMessaging;
+import me.tomski.utils.Reason;
+import me.tomski.utils.SeekerDelay;
+import me.tomski.utils.SideBarStats;
+import me.tomski.utils.SolidBlockTracker;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
+import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
+
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.logging.Level;
 
 public class GameManager
 {
@@ -69,11 +86,11 @@ public class GameManager
     public static int lobbyTime;
     public static int currentLobbyTime;
     public long gameStartTime;
-    
+
     public GameManager(final PropHunt plugin) {
         (this.plugin = plugin).setupClasses();
     }
-    
+
     public void hostGame(final Player host, final Arena arena) {
         if (GameManager.automatic) {
             if (!this.checkReady(arena)) {
@@ -123,11 +140,11 @@ public class GameManager
             GameManager.currentGameArena = arena;
         }
     }
-    
+
     public boolean checkReady(final Arena a) {
         return a != null && (a.getExitSpawn() != null && a.getHiderSpawn() != null && a.getLobbySpawn() != null && a.getSeekerSpawn() != null && a.getSpectatorSpawn() != null);
     }
-    
+
     public void startGame(final Player p) {
         if (GameManager.playersWaiting.size() < GameManager.playersToStartGame) {
             if (p != null) {
@@ -190,7 +207,7 @@ public class GameManager
         this.gameStartTime = System.currentTimeMillis();
         DisguiseManager.preChosenDisguise.clear();
     }
-    
+
     private void setupScoreBoard() {
         System.out.print("Setting UP Scoreboard");
         GameManager.SB = new PHScoreboard(this.plugin);
@@ -230,7 +247,7 @@ public class GameManager
             }
         }, 100L, 100L);
     }
-    
+
     private void givePlayersLoadOuts(final Arena a) {
         for (final String seek : GameManager.seekers) {
             if (this.plugin.getServer().getPlayer(seek) != null) {
@@ -255,7 +272,7 @@ public class GameManager
             }
         }
     }
-    
+
     private void freshPlayers() {
         for (final String s : GameManager.playersWaiting) {
             if (this.plugin.getServer().getPlayer(s) != null) {
@@ -266,7 +283,7 @@ public class GameManager
             }
         }
     }
-    
+
     private void disguisePlayers(final Arena a) {
         for (final String s : GameManager.hiders) {
             if (!GameManager.seekers.contains(s)) {
@@ -286,7 +303,7 @@ public class GameManager
             }
         }
     }
-    
+
     private void chooseSeekerAndSortPlayers() {
         final int playersize = GameManager.playersWaiting.size();
         GameManager.hiders.clear();
@@ -307,7 +324,7 @@ public class GameManager
         msg = LanguageManager.regex(msg, "\\{seeker\\}", seeker);
         PropHuntMessaging.broadcastMessageToPlayers(GameManager.hiders, GameManager.seekers, msg);
     }
-    
+
     private void giveCredits(final Player p, final double amount) {
         if (amount <= 0.0) {
             return;
@@ -329,7 +346,7 @@ public class GameManager
         message = message.replaceAll("credits", amount + " " + ShopSettings.currencyName);
         im.sendMessage(p, ChatColor.translateAlternateColorCodes('&', message));
     }
-    
+
     public void endGame(final Reason reason, final boolean shutdown) throws IOException {
         final BukkitRunnable endGameTask = new BukkitRunnable() {
             public void run() {
@@ -515,7 +532,7 @@ public class GameManager
             endGameTask.runTaskLater(this.plugin, 20L);
         }
     }
-    
+
     private void respawnQuick(final Player player) {
         this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin, new Runnable() {
             @Override
@@ -531,7 +548,7 @@ public class GameManager
             }
         }, 5L);
     }
-    
+
     private String broadcastEndReason(final Reason reason) {
         String reasonmsg = "";
         switch (reason) {
@@ -566,7 +583,7 @@ public class GameManager
         }
         return reasonmsg;
     }
-    
+
     public void kickPlayer(final String name, final boolean logOff) throws IOException {
         if (this.plugin.getServer().getPlayer(name) != null) {
             this.teleportToExit(this.plugin.getServer().getPlayer(name), true);
@@ -626,7 +643,7 @@ public class GameManager
             this.checkEnd();
         }
     }
-    
+
     public boolean chooseNewSeekerMeth() {
         if (GameManager.hiders.size() <= 0) {
             return false;
@@ -641,7 +658,7 @@ public class GameManager
         }
         return true;
     }
-    
+
     public void addPlayerToGameDedi(final String name) {
         if (!this.safeToJoin(name)) {
             PropHuntMessaging.sendMessage(this.plugin.getServer().getPlayer(name), "You are not safe to teleport");
@@ -682,12 +699,12 @@ public class GameManager
             }
         }
     }
-    
+
     private boolean safeToJoin(final String name) {
         final Player p = this.plugin.getServer().getPlayer(name);
         return !p.isInsideVehicle();
     }
-    
+
     public void addPlayerToGame(final String name) {
         if (GameManager.useSideStats) {
             this.plugin.SBS.addPlayerToLobby(this.plugin, this.plugin.getServer().getPlayer(name));
@@ -722,7 +739,7 @@ public class GameManager
             }
         }
     }
-    
+
     public void teleportPlayersStart() {
         GameManager.currentGameArena.getHiderSpawn().getChunk().load();
         for (final String s : GameManager.hiders) {
@@ -733,32 +750,32 @@ public class GameManager
             }
         }
     }
-    
+
     public void teleportSeekerStart(final Player p) {
         GameManager.currentGameArena.getSeekerSpawn().getChunk().load();
         p.teleport(GameManager.currentGameArena.getSeekerSpawn());
         PropHuntMessaging.sendMessage(p, MessageBank.GAME_START_MESSAGE_SEEKERS.getMsg());
     }
-    
+
     public void teleportToSpectator(final Player p) {
         p.teleport(GameManager.currentGameArena.getSpectatorSpawn());
         PropHuntMessaging.sendMessage(p, MessageBank.SPECTATING.getMsg());
     }
-    
+
     public void teleportToLobby(final Player p, final boolean message) {
         p.teleport(GameManager.currentGameArena.getLobbySpawn());
         if (message) {
             PropHuntMessaging.sendMessage(p, MessageBank.JOIN_LOBBY_MESSAGE.getMsg());
         }
     }
-    
+
     public void teleportToExit(final Player p, final boolean message) {
         p.teleport(GameManager.currentGameArena.getExitSpawn());
         if (message) {
             PropHuntMessaging.sendMessage(p, MessageBank.QUIT_GAME_MESSAGE.getMsg());
         }
     }
-    
+
     public void checkEnd() throws IOException {
         if (GameManager.seekers.isEmpty()) {
             this.endGame(Reason.HIDERSWON, false);
@@ -768,14 +785,14 @@ public class GameManager
             this.endGame(Reason.SEEKERWON, false);
         }
     }
-    
+
     public void spectateGame(final Player p) {
         if (GameManager.gameStatus) {
             this.teleportToSpectator(p);
             GameManager.spectators.add(p.getName());
         }
     }
-    
+
     static {
         GameManager.gameStatus = false;
         GameManager.isHosting = false;

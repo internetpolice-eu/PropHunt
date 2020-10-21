@@ -1,28 +1,34 @@
 package me.tomski.shop;
 
-import org.bukkit.entity.*;
-import java.util.*;
-import me.tomski.language.*;
-import org.bukkit.*;
-import me.tomski.prophunt.*;
-import org.bukkit.inventory.*;
-import org.bukkit.inventory.meta.*;
-import org.bukkit.scheduler.*;
-import org.bukkit.plugin.*;
-import org.bukkit.event.*;
-import org.bukkit.event.inventory.*;
-import me.tomski.enums.*;
+import me.tomski.language.MessageBank;
+import me.tomski.prophunt.PropHunt;
+import me.tomski.prophunt.ShopSettings;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainShop implements Listener
 {
     private PropHunt plugin;
     public List<Player> inMenu;
-    
+
     public MainShop(final PropHunt plugin) {
         this.inMenu = new ArrayList<Player>();
         this.plugin = plugin;
     }
-    
+
     public void openMainShop(final Player p) {
         final Inventory inv = Bukkit.createInventory(p, 9, MessageBank.SHOP_TITLE.getMsg());
         final ItemStack customItems = new ItemStack(Material.DIAMOND_SWORD);
@@ -68,7 +74,7 @@ public class MainShop implements Listener
         this.inMenu.add(p);
         p.openInventory(inv);
     }
-    
+
     @EventHandler
     public void onInventoryClick(final InventoryClickEvent e) {
         if (this.inMenu.contains(e.getWhoClicked()) && e.getCurrentItem() != null && !e.getCurrentItem().getType().equals(Material.AIR)) {
@@ -114,14 +120,14 @@ public class MainShop implements Listener
             }
         }
     }
-    
+
     @EventHandler
     public void onInventoryClose(final InventoryCloseEvent e) {
         if (this.inMenu.contains(e.getPlayer())) {
             this.inMenu.remove(e.getPlayer());
         }
     }
-    
+
     public int getCurrencyBalance(final Player p) {
         switch (ShopSettings.economyType) {
             case PROPHUNT: {

@@ -1,9 +1,10 @@
 package me.tomski.classes;
 
-import org.bukkit.inventory.*;
-import org.bukkit.potion.*;
-import org.bukkit.entity.*;
-import java.util.*;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+
+import java.util.List;
 
 public class SeekerClass
 {
@@ -13,7 +14,7 @@ public class SeekerClass
     private ItemStack boots;
     private List<PotionEffect> peffects;
     private List<ItemStack> invent;
-    
+
     public SeekerClass(final ItemStack helmet, final ItemStack torso, final ItemStack legs, final ItemStack boots, final List<PotionEffect> pfx, final List<ItemStack> inv) {
         this.helmet = helmet;
         this.torso = torso;
@@ -22,7 +23,7 @@ public class SeekerClass
         this.peffects = pfx;
         this.invent = inv;
     }
-    
+
     public void givePlayer(final Player p) {
         p.getInventory().setHelmet(this.helmet);
         p.getInventory().setChestplate(this.torso);

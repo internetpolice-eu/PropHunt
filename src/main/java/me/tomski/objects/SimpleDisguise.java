@@ -1,7 +1,7 @@
 package me.tomski.objects;
 
-import org.bukkit.entity.*;
-import org.bukkit.*;
+import org.bukkit.Material;
+import org.bukkit.entity.EntityType;
 
 public class SimpleDisguise
 {
@@ -9,14 +9,14 @@ public class SimpleDisguise
     private int damage;
     private EntityType ent;
     private String name;
-    
+
     public SimpleDisguise(final int id, final int damage, final EntityType ent) {
         this.id = id;
         this.damage = damage;
         this.ent = ent;
         this.name = this.initName();
     }
-    
+
     public SimpleDisguise(final String configString) {
         if (configString.startsWith("e:")) {
             this.ent = EntityType.fromName(configString.substring(2));
@@ -30,26 +30,26 @@ public class SimpleDisguise
         }
         this.name = this.initName();
     }
-    
+
     private String initName() {
         if (this.ent == null) {
             return Material.getMaterial(this.id).name();
         }
         return this.ent.name().toLowerCase().replaceAll("_", " ");
     }
-    
+
     public String getName() {
         return this.name;
     }
-    
+
     public Integer getID() {
         return this.id;
     }
-    
+
     public int getDamage() {
         return this.damage;
     }
-    
+
     public EntityType getEntityType() {
         return this.ent;
     }

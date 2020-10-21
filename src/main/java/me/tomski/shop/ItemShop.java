@@ -1,26 +1,33 @@
 package me.tomski.shop;
 
-import org.bukkit.entity.*;
-import me.tomski.language.*;
-import java.util.*;
-import org.bukkit.event.*;
-import org.bukkit.event.inventory.*;
-import org.bukkit.inventory.*;
-import org.bukkit.*;
-import me.tomski.prophunt.*;
-import org.bukkit.inventory.meta.*;
-import me.tomski.enums.*;
+import me.tomski.language.MessageBank;
+import me.tomski.prophunt.PropHunt;
+import me.tomski.prophunt.ShopSettings;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ItemShop implements Listener
 {
     private PropHunt plugin;
     public List<Player> inMenu;
-    
+
     public ItemShop(final PropHunt plugin) {
         this.inMenu = new ArrayList<Player>();
         this.plugin = plugin;
     }
-    
+
     public void openMainShop(final Player p) {
         final Inventory i = Bukkit.createInventory(p, this.getShopSize(this.plugin.getShopSettings().itemChoices.size()), MessageBank.ITEM_SHOP_NAME.getMsg());
         for (final ShopItem item : this.plugin.getShopSettings().itemChoices) {
@@ -30,7 +37,7 @@ public class ItemShop implements Listener
         p.openInventory(i);
         this.inMenu.add(p);
     }
-    
+
     @EventHandler
     public void onInventoryClick(final InventoryClickEvent e) {
         if (this.inMenu.contains(e.getWhoClicked()) && e.getCurrentItem() != null) {
@@ -51,14 +58,14 @@ public class ItemShop implements Listener
             }
         }
     }
-    
+
     @EventHandler
     public void onInventoryClose(final InventoryCloseEvent e) {
         if (this.inMenu.contains(e.getPlayer())) {
             this.inMenu.remove(e.getPlayer());
         }
     }
-    
+
     private void addCurrencyItem(final Inventory i, final Player p) {
         final ItemStack currency = new ItemStack(Material.EMERALD);
         final ItemMeta currencyMeta = currency.getItemMeta();
@@ -69,11 +76,11 @@ public class ItemShop implements Listener
         currency.setItemMeta(currencyMeta);
         i.setItem(i.getSize() - 1, currency);
     }
-    
+
     private int getShopSize(final int n) {
         return (int)Math.ceil(n / 9.0) * 9;
     }
-    
+
     public int getCurrencyBalance(final Player p) {
         switch (ShopSettings.economyType) {
             case PROPHUNT: {

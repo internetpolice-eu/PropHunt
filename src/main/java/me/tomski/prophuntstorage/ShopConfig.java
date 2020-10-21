@@ -1,17 +1,20 @@
 package me.tomski.prophuntstorage;
 
-import me.tomski.prophunt.*;
-import org.bukkit.configuration.file.*;
-import org.bukkit.configuration.*;
-import java.util.logging.*;
-import java.io.*;
+import me.tomski.prophunt.PropHunt;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.logging.Level;
 
 public class ShopConfig
 {
     public FileConfiguration StorageFilef;
     private File customConfigFile;
     private PropHunt plugin;
-    
+
     public ShopConfig(final PropHunt plugin) {
         this.StorageFilef = null;
         this.customConfigFile = null;
@@ -19,7 +22,7 @@ public class ShopConfig
         this.getShopConfig().options().copyDefaults(true);
         this.saveShopConfig();
     }
-    
+
     public void reloadShopConfig() {
         if (this.customConfigFile == null) {
             this.customConfigFile = new File(this.plugin.getDataFolder(), "Shop.yml");
@@ -31,14 +34,14 @@ public class ShopConfig
             this.StorageFilef.setDefaults(defConfig);
         }
     }
-    
+
     public FileConfiguration getShopConfig() {
         if (this.StorageFilef == null) {
             this.reloadShopConfig();
         }
         return this.StorageFilef;
     }
-    
+
     public void saveShopConfig() {
         if (this.StorageFilef == null || this.customConfigFile == null) {
             return;

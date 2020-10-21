@@ -1,26 +1,34 @@
 package me.tomski.shop;
 
-import org.bukkit.entity.*;
-import me.tomski.language.*;
-import me.tomski.utils.*;
-import java.util.*;
-import org.bukkit.*;
-import me.tomski.prophunt.*;
-import me.tomski.objects.*;
-import org.bukkit.event.*;
-import org.bukkit.inventory.*;
-import org.bukkit.event.inventory.*;
+import me.tomski.language.MessageBank;
+import me.tomski.objects.Loadout;
+import me.tomski.prophunt.DisguiseManager;
+import me.tomski.prophunt.GameManager;
+import me.tomski.prophunt.PropHunt;
+import me.tomski.utils.PropHuntMessaging;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class LoadoutChooser implements Listener
 {
     private PropHunt plugin;
     private List<Player> inInventory;
-    
+
     public LoadoutChooser(final PropHunt plugin) {
         this.inInventory = new ArrayList<Player>();
         this.plugin = plugin;
     }
-    
+
     public void openBlockShop(final Player p) {
         if (!GameManager.playersWaiting.contains(p.getName())) {
             PropHuntMessaging.sendMessage(p, MessageBank.NOT_IN_LOBBY.getMsg());
@@ -33,7 +41,7 @@ public class LoadoutChooser implements Listener
         p.openInventory(inv);
         this.inInventory.add(p);
     }
-    
+
     @EventHandler
     public void onInventClick(final InventoryClickEvent e) {
         if (this.inInventory.contains(e.getWhoClicked()) && e.getCurrentItem() != null) {
@@ -61,21 +69,21 @@ public class LoadoutChooser implements Listener
             }
         }
     }
-    
+
     private boolean hasPermsForItem(final Player player, final ItemStack currentItem) {
         if (currentItem.getData().getData() == 0) {
             return this.plugin.vaultUtils.permission.has(player, "prophunt.loadout." + currentItem.getTypeId());
         }
         return this.plugin.vaultUtils.permission.has(player, "prophunt.loadout." + currentItem.getTypeId() + "-" + currentItem.getData().getData());
     }
-    
+
     @EventHandler
     public void inventoryClose(final InventoryCloseEvent e) {
         if (this.inInventory.contains(e.getPlayer())) {
             this.inInventory.remove(e.getPlayer());
         }
     }
-    
+
     private int getShopSize(final int n) {
         return (int)Math.ceil(n / 9.0) * 9;
     }

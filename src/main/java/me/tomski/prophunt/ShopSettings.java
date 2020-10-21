@@ -1,12 +1,17 @@
 package me.tomski.prophunt;
 
-import me.tomski.shop.*;
-import me.tomski.enums.*;
-import me.tomski.prophuntstorage.*;
-import org.bukkit.inventory.*;
-import org.bukkit.*;
-import org.bukkit.enchantments.*;
-import java.util.*;
+import me.tomski.enums.EconomyType;
+import me.tomski.prophuntstorage.ShopConfig;
+import me.tomski.shop.ShopItem;
+import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class ShopSettings
 {
@@ -24,14 +29,14 @@ public class ShopSettings
     public static double vipBonus;
     private PropHunt plugin;
     private static PropHunt staticPlugin;
-    
+
     public ShopSettings(final PropHunt plugin) {
         this.blockChoices = new ArrayList<ShopItem>();
         this.itemChoices = new ArrayList<ShopItem>();
         ShopSettings.staticPlugin = plugin;
         this.plugin = plugin;
     }
-    
+
     public List<ShopItem> generateBlockChoices(final PropHunt plugin, final ShopConfig shopConfig) {
         final String path = "Disguises";
         final Set<String> keys = shopConfig.getShopConfig().getConfigurationSection(path).getKeys(false);
@@ -50,7 +55,7 @@ public class ShopSettings
         }
         return this.blockChoices;
     }
-    
+
     public List<ShopItem> generateItemChoices(final PropHunt plugin, final ShopConfig shopConfig) {
         final String path = "Items";
         final Set<String> keys = shopConfig.getShopConfig().getConfigurationSection(path).getKeys(false);
@@ -69,7 +74,7 @@ public class ShopSettings
         }
         return this.itemChoices;
     }
-    
+
     public static ItemStack getCustomItem(final String s) {
         final String mat = ShopSettings.staticPlugin.shopConfig.getShopConfig().getString("PropHuntItems." + s);
         if (mat.split(":").length == 2) {
@@ -88,7 +93,7 @@ public class ShopSettings
         }
         return null;
     }
-    
+
     public void loadShopItems(final PropHunt plugin) {
         this.blockChoices = this.generateBlockChoices(plugin, plugin.shopConfig);
         if (this.blockChoices == null) {
@@ -99,21 +104,21 @@ public class ShopSettings
             ShopSettings.enabled = false;
         }
     }
-    
+
     private String getStackPermission(final ItemStack currentItem) {
         if (currentItem.getData().getData() == 0) {
             return "prophunt.blockchooser." + currentItem.getTypeId();
         }
         return "prophunt.blockchooser." + currentItem.getTypeId() + "-" + currentItem.getData().getData();
     }
-    
+
     private String getItemStackPermission(final ItemStack currentItem) {
         if (currentItem.getData().getData() == 0) {
             return "prophunt.loadout." + currentItem.getTypeId();
         }
         return "prophunt.loadout." + currentItem.getTypeId() + "-" + currentItem.getData().getData();
     }
-    
+
     private ItemStack parseStringToStack(final PropHunt plugin, final String s) {
         if (s.split(":").length == 2) {
             final int id = Integer.valueOf(s.split(":")[0]);
@@ -131,7 +136,7 @@ public class ShopSettings
         }
         return null;
     }
-    
+
     private ItemStack parseITEMStringToStack(final String s) {
         ItemStack stack = null;
         final String[] enchantsplit = s.split(" ");

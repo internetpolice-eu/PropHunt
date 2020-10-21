@@ -1,30 +1,48 @@
 package me.tomski.prophunt;
 
-import org.bukkit.plugin.java.*;
-import org.bukkit.event.*;
-import me.tomski.currency.*;
-import me.tomski.prophuntstorage.*;
-import me.tomski.shop.*;
-import org.bukkit.plugin.*;
-import java.io.*;
-import me.tomski.blocks.*;
-import me.tomski.listeners.*;
-import me.tomski.bungee.*;
-import com.comphenix.protocol.*;
-import java.util.logging.*;
-import me.tomski.arenas.*;
-import org.bukkit.entity.*;
-import org.bukkit.command.*;
-import me.tomski.utils.*;
-import me.tomski.language.*;
-import me.tomski.objects.*;
-import org.bukkit.*;
-import org.bukkit.inventory.*;
-import me.tomski.classes.*;
-import org.bukkit.enchantments.*;
-import java.util.*;
-import org.bukkit.potion.*;
-import me.tomski.enums.*;
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
+import me.tomski.arenas.ArenaManager;
+import me.tomski.blocks.ProtocolTask;
+import me.tomski.bungee.Pinger;
+import me.tomski.classes.HiderClass;
+import me.tomski.classes.SeekerClass;
+import me.tomski.currency.SqlConnect;
+import me.tomski.language.LanguageManager;
+import me.tomski.language.MessageBank;
+import me.tomski.language.ScoreboardTranslate;
+import me.tomski.listeners.PropHuntListener;
+import me.tomski.listeners.SetupListener;
+import me.tomski.objects.SimpleDisguise;
+import me.tomski.prophuntstorage.ArenaStorage;
+import me.tomski.prophuntstorage.ShopConfig;
+import me.tomski.shop.ShopManager;
+import me.tomski.utils.LogFilter;
+import me.tomski.utils.MetricsLite;
+import me.tomski.utils.PingTimer;
+import me.tomski.utils.PropHuntMessaging;
+import me.tomski.utils.Reason;
+import me.tomski.utils.SideBarStats;
+import me.tomski.utils.SideTabTimer;
+import me.tomski.utils.VaultUtils;
+import org.bukkit.Material;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
 
 public class PropHunt extends JavaPlugin implements Listener
 {
@@ -43,11 +61,11 @@ public class PropHunt extends JavaPlugin implements Listener
     private ShopSettings shopSettings;
     private ShopManager shopManager;
     boolean shouldDisable;
-    
+
     public PropHunt() {
         this.shouldDisable = false;
     }
-    
+
     public void onEnable() {
         this.getConfig().options().copyDefaults(true);
         this.saveConfig();
@@ -71,7 +89,7 @@ public class PropHunt extends JavaPlugin implements Listener
         }
         this.getServer().getLogger().setFilter(new LogFilter());
     }
-    
+
     public void onDisable() {
         if (GameManager.gameStatus) {
             try {
@@ -83,7 +101,7 @@ public class PropHunt extends JavaPlugin implements Listener
         }
         this.AS.saveData();
     }
-    
+
     public void init() throws IOException {
         this.GM = new GameManager(this);
         this.AS = new ArenaStorage(this, this.GM);
@@ -129,7 +147,7 @@ public class PropHunt extends JavaPlugin implements Listener
             this.checkAUTOReady();
         }
     }
-    
+
     private void loadEconomySettings() {
         if (!ShopSettings.enabled) {
             this.getLogger().info("Not using shop!");
@@ -146,11 +164,11 @@ public class PropHunt extends JavaPlugin implements Listener
             this.vaultUtils = new VaultUtils(this, true);
         }
     }
-    
+
     public void loadProtocolManager() {
         PropHunt.protocolManager = ProtocolLibrary.getProtocolManager();
     }
-    
+
     private boolean checkAUTOReady() {
         if (this.AM.arenasInRotation == null) {
             this.getLogger().log(Level.WARNING, "Arena Not Setup, automatic hosting disabled");
@@ -170,7 +188,7 @@ public class PropHunt extends JavaPlugin implements Listener
         this.GM.hostGame(null, this.AM.arenasInRotation.get(0));
         return true;
     }
-    
+
     private boolean usingPropHuntSigns() {
         if (this.getConfig().getBoolean("BungeeSettings.using-bungee")) {
             BungeeSettings.usingBungee = true;
@@ -184,15 +202,15 @@ public class PropHunt extends JavaPlugin implements Listener
         }
         return false;
     }
-    
+
     public ShopManager getShopManager() {
         return this.shopManager;
     }
-    
+
     public ShopSettings getShopSettings() {
         return this.shopSettings;
     }
-    
+
     private void usingCustomTab() {
         final Plugin p = this.getServer().getPluginManager().getPlugin("TabAPI");
         if (p == null) {
@@ -212,7 +230,7 @@ public class PropHunt extends JavaPlugin implements Listener
             this.getLogger().log(Level.INFO, "Not using Custom TAB");
         }
     }
-    
+
     private void loadConfigSettings() {
         if (this.getConfig().contains("automatic")) {
             GameManager.automatic = this.getConfig().getBoolean("automatic");
@@ -300,7 +318,7 @@ public class PropHunt extends JavaPlugin implements Listener
             ServerManager.blockAccessWhilstInGame = this.getConfig().getBoolean("ServerSettings.block-access-whilst-in-game");
         }
     }
-    
+
     public boolean onCommand(final CommandSender sender, final Command cmd, final String commandLabel, final String[] args) {
         if (sender instanceof Player) {
             final Player p = (Player)sender;
@@ -583,7 +601,7 @@ public class PropHunt extends JavaPlugin implements Listener
             return true;
         }
     }
-    
+
     private void handleEconomyCommand(final CommandSender p, final String[] args) {
         final String playerName = args[1];
         final String type = args[2];
@@ -613,7 +631,7 @@ public class PropHunt extends JavaPlugin implements Listener
             this.setCurrencyBalance(p, playerName, currentAmount);
         }
     }
-    
+
     private void handleEconomyCommand(final Player p, final String[] args) {
         final String playerName = args[1];
         final String type = args[2];
@@ -643,7 +661,7 @@ public class PropHunt extends JavaPlugin implements Listener
             this.setCurrencyBalance(p, playerName, currentAmount);
         }
     }
-    
+
     private void setCurrencyBalance(final CommandSender setter, final String p, final int amount) {
         switch (ShopSettings.economyType) {
             case PROPHUNT: {
@@ -665,7 +683,7 @@ public class PropHunt extends JavaPlugin implements Listener
             }
         }
     }
-    
+
     private int getCurrencyBalance(final CommandSender setter, final String p) {
         switch (ShopSettings.economyType) {
             case PROPHUNT: {
@@ -682,7 +700,7 @@ public class PropHunt extends JavaPlugin implements Listener
         }
         return 0;
     }
-    
+
     private String getCurrencyBalance(final Player p) {
         switch (ShopSettings.economyType) {
             case PROPHUNT: {
@@ -696,7 +714,7 @@ public class PropHunt extends JavaPlugin implements Listener
             }
         }
     }
-    
+
     public int loadBlockDisguises() {
         int i = 0;
         if (this.getConfig().contains("block-disguises")) {
@@ -708,7 +726,7 @@ public class PropHunt extends JavaPlugin implements Listener
         }
         return i;
     }
-    
+
     private String parseDisguise(final String item) {
         final String[] split = item.split(":");
         if (split.length == 2 && this.isInt(split[0]) && this.isInt(split[1])) {
@@ -719,7 +737,7 @@ public class PropHunt extends JavaPlugin implements Listener
         }
         return null;
     }
-    
+
     private boolean isInt(final String item) {
         int i = 0;
         try {
@@ -730,11 +748,11 @@ public class PropHunt extends JavaPlugin implements Listener
         }
         return true;
     }
-    
+
     private boolean isItem(final int item) {
         return Material.getMaterial(item) != null && Material.getMaterial(item).isBlock();
     }
-    
+
     public void setupClasses() {
         if (this.getConfig().contains("SeekerClass")) {
             ItemStack helmet = null;
@@ -855,7 +873,7 @@ public class PropHunt extends JavaPlugin implements Listener
             }
         }
     }
-    
+
     private ItemStack parseITEMStringToStack(final String s) {
         ItemStack stack = null;
         final String[] enchantsplit = s.split(" ");
@@ -922,7 +940,7 @@ public class PropHunt extends JavaPlugin implements Listener
         stack = new ItemStack(Material.getMaterial(ID), AMOUNT2);
         return stack;
     }
-    
+
     private List<PotionEffect> loadEffectsList(final String path) {
         final List<PotionEffect> plist = new ArrayList<PotionEffect>();
         if (this.getConfig().contains(path + ".Effects")) {
@@ -952,7 +970,7 @@ public class PropHunt extends JavaPlugin implements Listener
         }
         return null;
     }
-    
+
     public Map<Integer, SimpleDisguise> getCustomDisguises(final String arenaName) {
         int i = 0;
         final Map<Integer, SimpleDisguise> disguiseMap = new HashMap<Integer, SimpleDisguise>();
@@ -966,7 +984,7 @@ public class PropHunt extends JavaPlugin implements Listener
         this.getLogger().info("Custom disguises loaded: " + disguiseMap.size());
         return disguiseMap;
     }
-    
+
     public HiderClass getCustomHiderClass(final String arenaName) {
         final String path = "CustomArenaConfigs." + arenaName + ".";
         HiderClass hc = null;
@@ -1033,7 +1051,7 @@ public class PropHunt extends JavaPlugin implements Listener
         }
         return hc;
     }
-    
+
     public SeekerClass getCustomSeekerClass(final String arenaName) {
         final String path = "CustomArenaConfigs." + arenaName + ".";
         SeekerClass sc = null;
@@ -1100,7 +1118,7 @@ public class PropHunt extends JavaPlugin implements Listener
         }
         return sc;
     }
-    
+
     public void hidePlayer(final Player owner, final ItemStack[] armour) {
         for (final Player viewer : owner.getServer().getOnlinePlayers()) {
             if (viewer != owner) {
@@ -1109,7 +1127,7 @@ public class PropHunt extends JavaPlugin implements Listener
         }
         this.dm.undisguisePlayer(owner);
     }
-    
+
     public void showPlayer(final Player owner, final boolean shutdown) {
         if (shutdown) {
             for (final Player viewer : owner.getServer().getOnlinePlayers()) {
@@ -1131,7 +1149,7 @@ public class PropHunt extends JavaPlugin implements Listener
             }, 1L);
         }
     }
-    
+
     static {
         PropHunt.usingTABAPI = false;
     }

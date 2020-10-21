@@ -1,21 +1,30 @@
 package me.tomski.utils;
 
-import org.bukkit.plugin.*;
-import org.bukkit.entity.*;
-import org.apache.commons.lang.*;
-import org.bukkit.metadata.*;
-import java.util.*;
-import org.bukkit.scheduler.*;
-import java.lang.ref.*;
-import org.bukkit.event.player.*;
-import org.bukkit.event.server.*;
-import org.bukkit.event.*;
-import org.bukkit.inventory.*;
-import org.bukkit.*;
-import org.bukkit.inventory.meta.*;
-import com.comphenix.protocol.events.*;
-import com.comphenix.protocol.*;
-import java.lang.reflect.*;
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.events.PacketContainer;
+import org.apache.commons.lang.Validate;
+import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.HandlerList;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerItemHeldEvent;
+import org.bukkit.event.server.PluginDisableEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.metadata.MetadataValue;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
+
+import java.lang.ref.WeakReference;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.PriorityQueue;
 
 public class ItemMessage
 {
@@ -28,7 +37,7 @@ public class ItemMessage
     private static final String METADATA_ID_KEY = "item-message:id";
     private final Plugin plugin;
     private String[] formats;
-    
+
     public ItemMessage(final Plugin plugin) {
         this.formats = new String[] { "%s", " %s " };
         final Plugin p = Bukkit.getPluginManager().getPlugin("ProtocolLib");
@@ -37,15 +46,15 @@ public class ItemMessage
         }
         this.plugin = plugin;
     }
-    
+
     public void sendMessage(final Player player, final String message) {
         this.sendMessage(player, message, 2, 0);
     }
-    
+
     public void sendMessage(final Player player, final String message, final int duration) {
         this.sendMessage(player, message, duration, 0);
     }
-    
+
     public void sendMessage(final Player player, final String message, final int duration, final int priority) {
         if (player.getGameMode() == GameMode.CREATIVE) {
             player.sendMessage(message);
@@ -58,7 +67,7 @@ public class ItemMessage
             }
         }
     }
-    
+
     public void setFormats(final String f1, final String f2) {
         Validate.isTrue(!f1.equals(f2), "format strings must be different");
         Validate.isTrue(f1.contains("%s"), "format string 1 must contain a %s");
@@ -66,7 +75,7 @@ public class ItemMessage
         this.formats[0] = f1;
         this.formats[1] = f2;
     }
-    
+
     private long getNextId(final Player player) {
         long id;
         if (player.hasMetadata("item-message:id")) {
@@ -79,7 +88,7 @@ public class ItemMessage
         player.setMetadata("item-message:id", new FixedMetadataValue(this.plugin, id + 1L));
         return id;
     }
-    
+
     private PriorityQueue<MessageRecord> getMessageQueue(final Player player) {
         if (!player.hasMetadata("item-message:msg-queue")) {
             player.setMetadata("item-message:msg-queue", new FixedMetadataValue(this.plugin, new PriorityQueue()));
@@ -91,7 +100,7 @@ public class ItemMessage
         }
         return null;
     }
-    
+
     private void notifyDone(final Player player) {
         final PriorityQueue<MessageRecord> msgQueue = this.getMessageQueue(player);
         msgQueue.poll();
@@ -100,7 +109,7 @@ public class ItemMessage
             new NamerTask(player, rec).runTaskTimer(this.plugin, 1L, 20L);
         }
     }
-    
+
     private MessageRecord importOtherMessageRecord(final Object other) {
         if (other instanceof MessageRecord) {
             return (MessageRecord)other;
@@ -124,14 +133,14 @@ public class ItemMessage
         }
         return null;
     }
-    
+
     private class NamerTask extends BukkitRunnable implements Listener
     {
         private final WeakReference<Player> playerRef;
         private final String message;
         private int slot;
         private int iterations;
-        
+
         public NamerTask(final Player player, final MessageRecord rec) {
             this.playerRef = new WeakReference<Player>(player);
             this.iterations = Math.max(1, rec.getDuration() * 20 / 20);
@@ -139,7 +148,7 @@ public class ItemMessage
             this.message = rec.getMessage();
             Bukkit.getPluginManager().registerEvents(this, ItemMessage.this.plugin);
         }
-        
+
         @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
         public void onItemHeldChange(final PlayerItemHeldEvent event) {
             final Player player = event.getPlayer();
@@ -149,7 +158,7 @@ public class ItemMessage
                 this.refresh(event.getPlayer());
             }
         }
-        
+
         @EventHandler
         public void onPluginDisable(final PluginDisableEvent event) {
             final Player player = this.playerRef.get();
@@ -158,7 +167,7 @@ public class ItemMessage
                 this.finish(this.playerRef.get());
             }
         }
-        
+
         public void run() {
             final Player player = this.playerRef.get();
             if (player != null) {
@@ -173,22 +182,22 @@ public class ItemMessage
                 this.cleanup();
             }
         }
-        
+
         private void refresh(final Player player) {
             this.sendItemSlotChange(player, this.slot, this.makeStack(player));
         }
-        
+
         private void finish(final Player player) {
             this.sendItemSlotChange(player, this.slot, player.getInventory().getItem(this.slot));
             ItemMessage.this.notifyDone(player);
             this.cleanup();
         }
-        
+
         private void cleanup() {
             this.cancel();
             HandlerList.unregisterAll(this);
         }
-        
+
         private ItemStack makeStack(final Player player) {
             final ItemStack stack0 = player.getInventory().getItem(this.slot);
             ItemStack stack2;
@@ -203,7 +212,7 @@ public class ItemMessage
             stack2.setItemMeta(meta);
             return stack2;
         }
-        
+
         private void sendItemSlotChange(final Player player, final int slot, final ItemStack stack) {
             final PacketContainer setSlot = new PacketContainer(103);
             setSlot.getIntegers().write(0, 0).write(1, slot + 36);
@@ -216,37 +225,37 @@ public class ItemMessage
             }
         }
     }
-    
+
     public class MessageRecord implements Comparable<Object>
     {
         private final String message;
         private final int duration;
         private final int priority;
         private final long id;
-        
+
         public MessageRecord(final String message, final int duration, final int priority, final long id) {
             this.message = message;
             this.duration = duration;
             this.priority = priority;
             this.id = id;
         }
-        
+
         public String getMessage() {
             return this.message;
         }
-        
+
         public int getDuration() {
             return this.duration;
         }
-        
+
         public int getPriority() {
             return this.priority;
         }
-        
+
         public long getId() {
             return this.id;
         }
-        
+
         @Override
         public int compareTo(final Object other) {
             final MessageRecord rec = ItemMessage.this.importOtherMessageRecord(other);

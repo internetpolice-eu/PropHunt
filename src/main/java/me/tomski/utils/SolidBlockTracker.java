@@ -1,11 +1,17 @@
 package me.tomski.utils;
 
-import me.tomski.blocks.*;
-import org.bukkit.*;
-import java.lang.reflect.*;
-import me.tomski.language.*;
-import me.tomski.prophunt.*;
-import java.util.*;
+import me.tomski.blocks.SolidBlock;
+import me.tomski.language.MessageBank;
+import me.tomski.prophunt.GameManager;
+import me.tomski.prophunt.PropHunt;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class SolidBlockTracker implements Runnable
 {
@@ -14,12 +20,12 @@ public class SolidBlockTracker implements Runnable
     public static Map<String, SolidBlock> solidBlocks;
     List<String> removeList;
     private PropHunt plugin;
-    
+
     public SolidBlockTracker(final PropHunt plugin) {
         this.removeList = new ArrayList<String>();
         this.plugin = plugin;
     }
-    
+
     @Override
     public void run() {
         for (final String s : SolidBlockTracker.movementTracker.keySet()) {
@@ -90,15 +96,15 @@ public class SolidBlockTracker implements Runnable
             }
         }
     }
-    
+
     public boolean hasMoved(final Location loc, final Location test) {
         return test.getBlockX() != loc.getBlockX() || test.getBlockZ() != loc.getBlockZ() || test.getBlockY() != loc.getBlockY();
     }
-    
+
     private boolean shouldBeSolid(final int i) {
         return i >= GameManager.solidBlockTime;
     }
-    
+
     static {
         SolidBlockTracker.movementTracker = new HashMap<String, Integer>();
         SolidBlockTracker.currentLocation = new HashMap<String, Location>();

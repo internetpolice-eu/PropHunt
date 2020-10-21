@@ -1,14 +1,17 @@
 package me.tomski.blocks;
 
-import org.bukkit.entity.*;
-import com.comphenix.protocol.events.*;
-import me.tomski.objects.*;
-import me.tomski.prophunt.*;
-import me.tomski.listeners.*;
-import java.lang.reflect.*;
-import com.comphenix.protocol.*;
-import org.bukkit.*;
-import com.comphenix.protocol.reflect.*;
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.ProtocolManager;
+import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.reflect.FieldAccessException;
+import me.tomski.listeners.PropHuntListener;
+import me.tomski.objects.SimpleDisguise;
+import me.tomski.prophunt.PropHunt;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+
+import java.lang.reflect.InvocationTargetException;
 
 public class SolidBlock
 {
@@ -20,7 +23,7 @@ public class SolidBlock
     PacketContainer blockChange;
     private SimpleDisguise d;
     public boolean dead;
-    
+
     public SolidBlock(final Location loc, final Player p, final ProtocolManager pm, final PropHunt plugin) throws InvocationTargetException {
         this.dead = false;
         this.loc = loc.clone();
@@ -32,7 +35,7 @@ public class SolidBlock
         plugin.hidePlayer(this.owner = p, this.owner.getInventory().getArmorContents());
         PropHuntListener.tempIgnoreUndisguise.add(this.owner);
     }
-    
+
     public boolean hasMoved(final PropHunt plugin) {
         if (this.owner.getLocation().getBlockX() != this.loc.getBlockX()) {
             return true;
@@ -51,7 +54,7 @@ public class SolidBlock
         }
         return false;
     }
-    
+
     private PacketContainer getBlockPacket() {
         this.blockChange = this.pm.createPacket(PacketType.Play.Server.BLOCK_CHANGE);
         try {
@@ -63,7 +66,7 @@ public class SolidBlock
         }
         return this.blockChange;
     }
-    
+
     public void unSetBlock(final PropHunt plugin) throws InvocationTargetException {
         this.dead = true;
         this.blockChange = this.pm.createPacket(PacketType.Play.Server.BLOCK_CHANGE);
@@ -78,7 +81,7 @@ public class SolidBlock
         this.sendPacket(plugin.getServer().getOnlinePlayers());
         plugin.dm.disguisePlayer(this.owner, this.d);
     }
-    
+
     public void sendPacket(final Player[] players) throws InvocationTargetException {
         for (final Player p : players) {
             if (!p.equals(this.owner)) {

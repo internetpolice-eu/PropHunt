@@ -1,11 +1,19 @@
 package me.tomski.arenas;
 
-import org.bukkit.entity.*;
-import org.bukkit.inventory.*;
-import org.bukkit.*;
-import org.bukkit.inventory.meta.*;
-import me.tomski.prophunt.*;
-import java.util.*;
+import me.tomski.prophunt.GameManager;
+import me.tomski.prophunt.PropHunt;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 public class ArenaManager
 {
@@ -18,14 +26,14 @@ public class ArenaManager
     public int rotationCounter;
     Random rand;
     int selection;
-    
+
     public ArenaManager(final PropHunt ph) {
         this.arenasInRotation = new ArrayList<Arena>();
         this.rotationCounter = 0;
         this.rand = new Random();
         this.plugin = ph;
     }
-    
+
     public void addSettingUp(final Player sender, final String name) {
         if (ArenaManager.setupMap.containsKey(sender.getName())) {
             return;
@@ -34,7 +42,7 @@ public class ArenaManager
         this.giveSetupTools(sender);
         ArenaManager.currentArena = new Arena(name, null, null, null, null, null);
     }
-    
+
     public void giveSetupTools(final Player p) {
         final ItemStack tool1 = new ItemStack(Material.WOOL, 1, (short)1);
         final ItemMeta t1meta = tool1.getItemMeta();
@@ -64,11 +72,11 @@ public class ArenaManager
         p.getInventory().addItem(new ItemStack[] { tool1, tool2, tool3, tool4, tool5 });
         p.updateInventory();
     }
-    
+
     public boolean checkComplete() {
         return ArenaManager.currentArena != null && ArenaManager.currentArena.isComplete();
     }
-    
+
     public boolean deleteArena(final String string) {
         String remove = null;
         for (final String a : ArenaManager.playableArenas.keySet()) {
@@ -88,7 +96,7 @@ public class ArenaManager
         }
         return false;
     }
-    
+
     public Arena getNextInRotation() {
         if (GameManager.randomArenas) {
             this.selection = this.rand.nextInt(this.arenasInRotation.size());
@@ -101,7 +109,7 @@ public class ArenaManager
         ++this.rotationCounter;
         return a;
     }
-    
+
     public boolean hasInvetorySpace(final Player p) {
         int counter = 0;
         for (final ItemStack item : p.getInventory().getContents()) {
@@ -114,7 +122,7 @@ public class ArenaManager
         }
         return counter >= 5;
     }
-    
+
     static {
         ArenaManager.arenaConfigs = new HashMap<Arena, ArenaConfig>();
         ArenaManager.setupMap = new HashMap<String, String>();

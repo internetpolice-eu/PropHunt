@@ -1,11 +1,10 @@
 package me.tomski.prophunt;
 
-import me.tomski.bungee.*;
-import java.io.*;
-import org.bukkit.plugin.*;
-import org.bukkit.command.*;
-import java.util.*;
-import org.bukkit.entity.*;
+import me.tomski.bungee.Pinger;
+import org.bukkit.entity.Player;
+
+import java.io.IOException;
+import java.util.List;
 
 public class AutomationSettings
 {
@@ -13,13 +12,13 @@ public class AutomationSettings
     public static int gamesTillReset;
     public static int gamesPlayed;
     public static List<String> commandsToRun;
-    
+
     public static void initSettings(final PropHunt plugin) {
         AutomationSettings.dispatchCommands = plugin.getConfig().getBoolean("AutomationSettings.dispatch-commands-after-x-games");
         AutomationSettings.gamesTillReset = plugin.getConfig().getInt("AutomationSettings.number-of-games");
         AutomationSettings.commandsToRun = plugin.getConfig().getStringList("AutomationSettings.commands");
     }
-    
+
     public static boolean runChecks(final PropHunt plugin) {
         if (!AutomationSettings.dispatchCommands) {
             return false;
@@ -56,7 +55,7 @@ public class AutomationSettings
         }
         return false;
     }
-    
+
     static {
         AutomationSettings.gamesPlayed = 0;
     }

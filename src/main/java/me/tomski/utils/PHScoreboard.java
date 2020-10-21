@@ -1,22 +1,22 @@
 package me.tomski.utils;
 
-import org.bukkit.entity.*;
-import org.mcsg.double0negative.tabapi.*;
-import org.bukkit.plugin.*;
-import me.tomski.prophunt.*;
-import me.tomski.blocks.*;
-import org.bukkit.*;
-import java.util.*;
+import me.tomski.prophunt.GameManager;
+import me.tomski.prophunt.PropHunt;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
+import org.mcsg.double0negative.tabapi.TabAPI;
 
 public class PHScoreboard
 {
     private PropHunt plugin;
     public static boolean disguisesBlown;
-    
+
     public PHScoreboard(final PropHunt plugin) {
         this.plugin = plugin;
     }
-    
+
     public void updateTab(final Player p) {
         if (!p.isOnline()) {
             return;
@@ -112,14 +112,14 @@ public class PHScoreboard
         TabAPI.setTabString((Plugin)this.plugin, p, 10, 2, ChatColor.BLUE + "" + GameManager.timeleft);
         TabAPI.updatePlayer(p);
     }
-    
+
     public void removeTab(final Player p) {
         if (p.isOnline()) {
             TabAPI.setPriority((Plugin)this.plugin, p, -2);
             TabAPI.updatePlayer(p);
         }
     }
-    
+
     static {
         PHScoreboard.disguisesBlown = false;
     }

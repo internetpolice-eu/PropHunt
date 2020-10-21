@@ -1,7 +1,6 @@
 package me.tomski.enums;
 
-public enum EconomyType
-{
-    PROPHUNT, 
+public enum EconomyType {
+    PROPHUNT,
     VAULT;
 }

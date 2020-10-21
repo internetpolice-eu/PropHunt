@@ -1,18 +1,23 @@
 package me.tomski.prophunt;
 
-import org.bukkit.event.*;
-import me.tomski.objects.*;
-import pgDev.bukkit.DisguiseCraft.api.*;
-import pgDev.bukkit.DisguiseCraft.*;
-import java.util.logging.*;
-import pgDev.bukkit.DisguiseCraft.disguise.*;
-import org.bukkit.*;
-import me.tomski.arenas.*;
-import me.tomski.language.*;
-import me.tomski.utils.*;
-import org.bukkit.event.player.*;
-import org.bukkit.entity.*;
-import java.util.*;
+import me.tomski.arenas.ArenaConfig;
+import me.tomski.language.MessageBank;
+import me.tomski.objects.Loadout;
+import me.tomski.objects.SimpleDisguise;
+import me.tomski.utils.PropHuntMessaging;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerToggleSneakEvent;
+import pgDev.bukkit.DisguiseCraft.DisguiseCraft;
+import pgDev.bukkit.DisguiseCraft.api.DisguiseCraftAPI;
+import pgDev.bukkit.DisguiseCraft.disguise.Disguise;
+import pgDev.bukkit.DisguiseCraft.disguise.DisguiseType;
+
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.logging.Level;
 
 public class DisguiseCraftManager extends DisguiseManager implements Listener
 {
@@ -21,18 +26,18 @@ public class DisguiseCraftManager extends DisguiseManager implements Listener
     public static Map<Player, SimpleDisguise> preChosenDisguise;
     public static Map<Player, Loadout> loadouts;
     public DisguiseCraftAPI dcAPI;
-    
+
     public DisguiseCraftManager(final PropHunt plugin) {
         super(plugin);
         this.dcAPI = DisguiseCraft.getAPI();
         final int i = plugin.loadBlockDisguises();
         plugin.getLogger().log(Level.INFO, "PropHunt: " + i + " disgiuses loaded");
     }
-    
+
     public DisguiseCraftAPI getDcAPI() {
         return this.dcAPI;
     }
-    
+
     private Disguise getDisguise(final SimpleDisguise sd) {
         if (sd.getEntityType() == null) {
             final LinkedList<String> data = new LinkedList<String>();
@@ -44,22 +49,22 @@ public class DisguiseCraftManager extends DisguiseManager implements Listener
         final int id2 = this.getDcAPI().newEntityID();
         return new Disguise(id2, "", DisguiseType.fromString(sd.getEntityType().name()));
     }
-    
+
     @Override
     public boolean isDisguised(final Player p) {
         return this.dcAPI.isDisguised(p);
     }
-    
+
     @Override
     public void disguisePlayer(final Player p, final SimpleDisguise d) {
         this.dcAPI.disguisePlayer(p, this.getDisguise(d));
     }
-    
+
     @Override
     public void undisguisePlayer(final Player p) {
         this.dcAPI.undisguisePlayer(p, false);
     }
-    
+
     @Override
     public String getDisguiseName(final Player p) {
         if (this.isDisguised(p) && this.getSimpleDisguise(p) != null) {
@@ -67,11 +72,11 @@ public class DisguiseCraftManager extends DisguiseManager implements Listener
         }
         return "None";
     }
-    
+
     private String parseIdToName(final int id) {
         return Material.getMaterial(id).name();
     }
-    
+
     @Override
     public void randomDisguise(final Player p, final ArenaConfig ac) {
         if (DisguiseCraftManager.preChosenDisguise.containsKey(p)) {
@@ -103,7 +108,7 @@ public class DisguiseCraftManager extends DisguiseManager implements Listener
             PropHuntMessaging.sendMessage(p, MessageBank.DISGUISE_MESSAGE.getMsg() + DisguiseManager.parseDisguiseToName(ds2));
         }
     }
-    
+
     @Override
     public void toggleBlockLock(final PlayerToggleSneakEvent e) {
         final Disguise d = this.getDcAPI().getDisguise(e.getPlayer());
@@ -118,7 +123,7 @@ public class DisguiseCraftManager extends DisguiseManager implements Listener
             }
         }
     }
-    
+
     @Override
     public SimpleDisguise getSimpleDisguise(final Player p) {
         if (this.dcAPI.getDisguise(p).type.equals(DisguiseType.FallingBlock)) {
@@ -126,7 +131,7 @@ public class DisguiseCraftManager extends DisguiseManager implements Listener
         }
         return null;
     }
-    
+
     static {
         DisguiseCraftManager.blockDisguises = new HashMap<Integer, SimpleDisguise>();
         DisguiseCraftManager.preChosenDisguise = new HashMap<Player, SimpleDisguise>();

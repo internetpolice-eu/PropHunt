@@ -1,6 +1,7 @@
 package me.tomski.utils;
 
-import java.util.logging.*;
+import java.util.logging.Filter;
+import java.util.logging.LogRecord;
 
 public class LogFilter implements Filter
 {

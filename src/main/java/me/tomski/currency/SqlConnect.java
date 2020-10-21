@@ -1,8 +1,15 @@
 package me.tomski.currency;
 
-import me.tomski.enums.*;
-import me.tomski.prophunt.*;
-import java.sql.*;
+import me.tomski.enums.EconomyType;
+import me.tomski.prophunt.PropHunt;
+import me.tomski.prophunt.ShopSettings;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 public class SqlConnect
 {
@@ -10,7 +17,7 @@ public class SqlConnect
     private PropHunt plugin;
     private SqlSettings settings;
     private Connection connection;
-    
+
     public SqlConnect(final PropHunt plugin) {
         this.plugin = plugin;
         this.settings = new SqlSettings(plugin);
@@ -26,13 +33,13 @@ public class SqlConnect
             this.enabled = false;
         }
     }
-    
+
     private void refreshConnect() throws SQLException {
         if (this.connection == null) {
             this.connection = DriverManager.getConnection(this.settings.getUrl(), this.settings.getUsername(), this.settings.getPass());
         }
     }
-    
+
     private void testConnection() throws SQLException {
         this.connection = DriverManager.getConnection(this.settings.getConnector() + this.settings.getHost() + ":" + this.settings.getPort() + "/", this.settings.getUsername(), this.settings.getPass());
         final PreparedStatement sampleQueryStatement = this.connection.prepareStatement("CREATE DATABASE IF NOT EXISTS `" + this.settings.getDatabase() + "`");
@@ -42,7 +49,7 @@ public class SqlConnect
         sampleQueryStatement.executeUpdate();
         sampleQueryStatement.close();
     }
-    
+
     public int getCredits(final String playerName) {
         try {
             this.refreshConnect();
@@ -71,7 +78,7 @@ public class SqlConnect
         }
         return 0;
     }
-    
+
     public void setCredits(final String playerName, final int amount) {
         try {
             this.refreshConnect();

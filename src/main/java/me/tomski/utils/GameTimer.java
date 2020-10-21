@@ -1,9 +1,10 @@
 package me.tomski.utils;
 
-import me.tomski.prophunt.*;
-import me.tomski.language.*;
-import java.io.*;
-import java.util.*;
+import me.tomski.language.MessageBank;
+import me.tomski.prophunt.GameManager;
+import me.tomski.prophunt.PropHunt;
+
+import java.io.IOException;
 
 public class GameTimer implements Runnable
 {
@@ -16,7 +17,7 @@ public class GameTimer implements Runnable
     public GameManager GM;
     private int intervalcounter;
     private SideBarStats sbs;
-    
+
     public GameTimer(final GameManager gm, final PropHunt plugin, final double seeker_damage, final int interval, final int startingtime, final SideBarStats stats) {
         this.intervalcounter = 0;
         this.plugin = plugin;
@@ -27,7 +28,7 @@ public class GameTimer implements Runnable
         this.GM = gm;
         this.sbs = stats;
     }
-    
+
     @Override
     public void run() {
         --this.timeleft;
@@ -56,7 +57,7 @@ public class GameTimer implements Runnable
             e.printStackTrace();
         }
     }
-    
+
     private void intervalSeekers() {
         PropHuntMessaging.broadcastMessageToPlayers(GameManager.hiders, GameManager.seekers, this.timeleft + MessageBank.GAME_TIME_LEFT.getMsg());
         for (final String seekers : GameManager.seekers) {
@@ -65,7 +66,7 @@ public class GameTimer implements Runnable
             }
         }
     }
-    
+
     private void intervalPlayers() {
         for (final String hiders : GameManager.hiders) {
             if (this.plugin.getServer().getPlayer(hiders) != null) {

@@ -1,11 +1,15 @@
 package me.tomski.utils;
 
-import org.bukkit.entity.*;
-import org.bukkit.*;
-import me.tomski.prophunt.*;
-import org.bukkit.potion.*;
-import me.tomski.language.*;
-import java.util.*;
+import me.tomski.language.MessageBank;
+import me.tomski.prophunt.GameManager;
+import me.tomski.prophunt.PropHunt;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SeekerDelay implements Runnable
 {
@@ -15,7 +19,7 @@ public class SeekerDelay implements Runnable
     private PropHunt PLUGIN;
     private Location LOCATION;
     public boolean isDelaying;
-    
+
     public SeekerDelay(final Player firstSeeker, final int time, final PropHunt plugin) {
         (this.PLAYERS = new ArrayList<Player>()).add(firstSeeker);
         this.COUNTER = time;
@@ -23,15 +27,15 @@ public class SeekerDelay implements Runnable
         this.LOCATION = firstSeeker.getLocation().clone();
         this.isDelaying = true;
     }
-    
+
     public void setID(final int delayID) {
         this.ID = delayID;
     }
-    
+
     public void addPlayer(final Player seeker) {
         this.PLAYERS.add(seeker);
     }
-    
+
     @Override
     public void run() {
         for (final Player p : this.PLAYERS) {

@@ -1,8 +1,9 @@
 package me.tomski.utils;
 
-import me.tomski.prophunt.*;
-import org.bukkit.entity.*;
-import me.tomski.language.*;
+import me.tomski.language.LanguageManager;
+import me.tomski.language.MessageBank;
+import me.tomski.prophunt.GameManager;
+import me.tomski.prophunt.PropHunt;
 
 public class LobbyThread implements Runnable
 {
@@ -10,13 +11,13 @@ public class LobbyThread implements Runnable
     int id;
     private PropHunt plugin;
     public boolean isRunning;
-    
+
     public LobbyThread(final PropHunt plugin, final int startingTime) {
         this.isRunning = false;
         this.plugin = plugin;
         this.time = new Integer(startingTime);
     }
-    
+
     @Override
     public void run() {
         if (!this.isRunning) {
@@ -42,7 +43,7 @@ public class LobbyThread implements Runnable
         PropHuntMessaging.broadcastLobby(regex);
         this.time = GameManager.lobbyTime;
     }
-    
+
     public void setId(final int ID) {
         this.id = ID;
     }

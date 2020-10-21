@@ -1,15 +1,15 @@
 package me.tomski.objects;
 
-import org.bukkit.configuration.file.*;
-import me.tomski.prophunt.*;
-import me.tomski.arenas.*;
+import me.tomski.arenas.Arena;
+import me.tomski.prophunt.PropHunt;
+import org.bukkit.configuration.file.FileConfiguration;
 
 public class ArenaFileStructureWrapper
 {
     public static boolean usingOldFormat(final FileConfiguration storage, final String arenaName) {
         return storage.isVector("Arenas." + arenaName + ".lobbyVec");
     }
-    
+
     public static void translateToNewStorageFormat(final PropHunt plugin, final FileConfiguration storage, final Arena a) {
         plugin.AS.getStorageFile().set("Arenas." + a.getArenaName(), null);
         plugin.AS.saveStorageFile();

@@ -1,22 +1,28 @@
 package me.tomski.utils;
 
-import org.bukkit.entity.*;
-import me.tomski.prophunt.*;
-import org.bukkit.*;
-import org.bukkit.scoreboard.*;
-import org.bukkit.plugin.*;
-import java.util.*;
+import me.tomski.prophunt.GameManager;
+import me.tomski.prophunt.PropHunt;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Score;
+import org.bukkit.scoreboard.Scoreboard;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class SideBarStats
 {
     Scoreboard board;
     PropHunt plugin;
     public static Map<Player, Scoreboard> playerBoards;
-    
+
     public SideBarStats(final PropHunt plugin) {
         this.plugin = plugin;
     }
-    
+
     public void updateBoard() {
         for (final Player p : SideBarStats.playerBoards.keySet()) {
             if (p == null || !p.isOnline()) {
@@ -103,7 +109,7 @@ public class SideBarStats
             score5.setScore(GameManager.spectators.size());
         }
     }
-    
+
     public void removeScoreboard(final PropHunt plugin, final Player p) {
         if (p == null) {
             return;
@@ -116,7 +122,7 @@ public class SideBarStats
             p.setScoreboard(plugin.getServer().getScoreboardManager().getNewScoreboard());
         }
     }
-    
+
     public void addPlayerToGame(final PropHunt plugin, final Player p) {
         if (p == null || !p.isOnline()) {
             return;
@@ -150,7 +156,7 @@ public class SideBarStats
             SideBarStats.playerBoards.put(p, sb);
         }
     }
-    
+
     public void addPlayerToLobby(final PropHunt plugin, final Player p) {
         plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
             @Override
@@ -188,7 +194,7 @@ public class SideBarStats
             }
         }, 40L);
     }
-    
+
     static {
         SideBarStats.playerBoards = new HashMap<Player, Scoreboard>();
     }

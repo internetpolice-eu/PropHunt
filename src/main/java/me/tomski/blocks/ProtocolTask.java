@@ -1,31 +1,32 @@
 package me.tomski.blocks;
 
-import org.bukkit.event.*;
-import com.comphenix.protocol.*;
-import org.bukkit.plugin.*;
-import me.tomski.prophunt.*;
-import me.tomski.utils.*;
-import java.util.*;
-import org.bukkit.entity.*;
-import com.comphenix.protocol.reflect.*;
-import com.comphenix.protocol.wrappers.*;
-import org.bukkit.*;
-import com.comphenix.protocol.events.*;
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.events.PacketAdapter;
+import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.events.PacketEvent;
+import com.comphenix.protocol.reflect.FieldAccessException;
+import com.comphenix.protocol.wrappers.EnumWrappers;
+import me.tomski.prophunt.GameManager;
+import me.tomski.prophunt.PropHunt;
+import me.tomski.utils.SolidBlockTracker;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 
 public class ProtocolTask implements Listener
 {
     private PropHunt plugin;
-    
+
     public ProtocolTask(final PropHunt plugin) {
         this.plugin = plugin;
     }
-    
+
     public void initProtocol() {
         PropHunt.protocolManager.getAsynchronousManager().registerAsyncHandler(new PacketAdapter(this.plugin, new PacketType[] { PacketType.Play.Client.BLOCK_PLACE }) {
             public void onPacketSending(final PacketEvent event) {
                 System.out.println("sent packet " + event.getPacketType());
             }
-            
+
             public void onPacketReceiving(final PacketEvent event) {
                 if (GameManager.hiders.contains(event.getPlayer().getName())) {
                     final int x = event.getPacket().getIntegers().read(0);
@@ -53,7 +54,7 @@ public class ProtocolTask implements Listener
             public void onPacketSending(final PacketEvent event) {
                 System.out.println("sent packet " + event.getPacketType());
             }
-            
+
             public void onPacketReceiving(final PacketEvent event) {
                 final int ATTACK_REACH = 3;
                 final Player observer = event.getPlayer();
@@ -90,7 +91,7 @@ public class ProtocolTask implements Listener
             }
         }).syncStart();
     }
-    
+
     private boolean hasIntersection(final Vector3D p1, final Vector3D p2, final Vector3D min, final Vector3D max) {
         final double epsilon = 9.999999747378752E-5;
         final Vector3D d = p2.subtract(p1).multiply(0.5);
@@ -99,7 +100,7 @@ public class ProtocolTask implements Listener
         final Vector3D ad = d.abs();
         return Math.abs(c.x) <= e.x + ad.x && Math.abs(c.y) <= e.y + ad.y && Math.abs(c.z) <= e.z + ad.z && Math.abs(d.y * c.z - d.z * c.y) <= e.y * ad.z + e.z * ad.y + 9.999999747378752E-5 && Math.abs(d.z * c.x - d.x * c.z) <= e.z * ad.x + e.x * ad.z + 9.999999747378752E-5 && Math.abs(d.x * c.y - d.y * c.x) <= e.x * ad.y + e.y * ad.x + 9.999999747378752E-5;
     }
-    
+
     private void toggleVisibilityNative(final Player observer, final Player target) {
         if (observer.canSee(target)) {
             observer.hidePlayer(target);

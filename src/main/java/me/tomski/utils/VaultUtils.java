@@ -1,17 +1,18 @@
 package me.tomski.utils;
 
-import net.milkbowl.vault.permission.*;
-import net.milkbowl.vault.economy.*;
-import me.tomski.prophunt.*;
-import me.tomski.enums.*;
-import org.bukkit.plugin.*;
+import me.tomski.enums.EconomyType;
+import me.tomski.prophunt.PropHunt;
+import me.tomski.prophunt.ShopSettings;
+import net.milkbowl.vault.economy.Economy;
+import net.milkbowl.vault.permission.Permission;
+import org.bukkit.plugin.RegisteredServiceProvider;
 
 public class VaultUtils
 {
     public Permission permission;
     public Economy economy;
     private PropHunt plugin;
-    
+
     public VaultUtils(final PropHunt plugin) {
         this.permission = null;
         this.economy = null;
@@ -34,7 +35,7 @@ public class VaultUtils
         ShopSettings.enabled = false;
         plugin.getLogger().info("Vault permissions not found! Shop disabling!");
     }
-    
+
     public VaultUtils(final PropHunt plugin, final boolean usingPropHunt) {
         this.permission = null;
         this.economy = null;
@@ -50,7 +51,7 @@ public class VaultUtils
             }
         }
     }
-    
+
     private boolean setupPermissions() {
         final RegisteredServiceProvider<Permission> permissionProvider = (RegisteredServiceProvider<Permission>)this.plugin.getServer().getServicesManager().getRegistration((Class)Permission.class);
         if (permissionProvider != null) {
@@ -58,7 +59,7 @@ public class VaultUtils
         }
         return this.permission != null;
     }
-    
+
     private boolean setupEconomy() {
         final RegisteredServiceProvider<Economy> economyProvider = (RegisteredServiceProvider<Economy>)this.plugin.getServer().getServicesManager().getRegistration((Class)Economy.class);
         if (economyProvider != null) {

@@ -1,11 +1,13 @@
 package me.tomski.language;
 
-import me.tomski.prophunt.*;
-import java.util.*;
-import org.bukkit.configuration.file.*;
-import org.bukkit.configuration.*;
-import java.io.*;
-import java.util.logging.*;
+import me.tomski.prophunt.PropHunt;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.logging.Level;
 
 public class LanguageManager
 {
@@ -15,7 +17,7 @@ public class LanguageManager
     private String fileName;
     private FileConfiguration languageConfig;
     private File customLanguageFile;
-    
+
     public LanguageManager(final PropHunt ph) throws IOException {
         this.plugin = ph;
         this.fileName = this.plugin.getConfig().getString("UseLanguageFile");
@@ -24,7 +26,7 @@ public class LanguageManager
         this.initfile();
         this.copyDefaultsToCurrentfile();
     }
-    
+
     private void copyDefaultsToCurrentfile() throws IOException {
         for (final String key : this.languageConfig.getKeys(false)) {
             if (LanguageManager.currentLanguageFile.contains(key)) {
@@ -34,22 +36,22 @@ public class LanguageManager
         }
         LanguageManager.currentLanguageFile.save(this.customConfigFile);
     }
-    
+
     public void initfile() {
         this.getLanguageFileInUse(this.fileName);
     }
-    
+
     public static String regex(final String msg, final String regex, final String replacement) {
         return msg.replaceAll(regex, replacement);
     }
-    
+
     private void getLanguageFileInUse(final String name) {
         if (this.customConfigFile == null) {
             this.customConfigFile = new File(this.plugin.getDataFolder(), name);
         }
         LanguageManager.currentLanguageFile = YamlConfiguration.loadConfiguration(this.customConfigFile);
     }
-    
+
     public void reloadLanguage() {
         if (this.customLanguageFile == null) {
             this.customLanguageFile = new File(this.plugin.getDataFolder(), "Language.yml");
@@ -61,14 +63,14 @@ public class LanguageManager
             this.languageConfig.setDefaults(defConfig);
         }
     }
-    
+
     public FileConfiguration getLanguageFile() {
         if (this.languageConfig == null) {
             this.reloadLanguage();
         }
         return this.languageConfig;
     }
-    
+
     public void saveLanguageFile() {
         if (this.languageConfig == null || this.customLanguageFile == null) {
             return;
@@ -80,7 +82,7 @@ public class LanguageManager
             this.plugin.getLogger().log(Level.SEVERE, "Could not save config to " + this.customLanguageFile, ex);
         }
     }
-    
+
     public static String getMessageFromFile(final String string) {
         return LanguageManager.currentLanguageFile.getString(string);
     }

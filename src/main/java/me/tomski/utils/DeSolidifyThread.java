@@ -1,25 +1,29 @@
 package me.tomski.utils;
 
-import org.bukkit.entity.*;
-import me.tomski.blocks.*;
-import me.tomski.prophunt.*;
-import me.tomski.language.*;
-import java.lang.reflect.*;
-import me.tomski.listeners.*;
-import java.util.*;
+import me.tomski.blocks.SolidBlock;
+import me.tomski.language.MessageBank;
+import me.tomski.listeners.PropHuntListener;
+import me.tomski.prophunt.GameManager;
+import me.tomski.prophunt.PropHunt;
+import org.bukkit.entity.Player;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class DeSolidifyThread implements Runnable
 {
     private PropHunt plugin;
     List<String> removeList;
     List<Player> playerRemoveList;
-    
+
     public DeSolidifyThread(final PropHunt plugin) {
         this.removeList = new ArrayList<String>();
         this.playerRemoveList = new ArrayList<Player>();
         this.plugin = plugin;
     }
-    
+
     @Override
     public void run() {
         for (final Map.Entry<String, SolidBlock> sb : SolidBlockTracker.solidBlocks.entrySet()) {

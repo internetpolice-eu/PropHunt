@@ -1,20 +1,25 @@
 package me.tomski.bungee;
 
-import org.bukkit.entity.*;
-import org.bukkit.plugin.*;
-import java.io.*;
-import me.tomski.prophunt.*;
+import me.tomski.prophunt.BungeeSettings;
+import me.tomski.prophunt.GameManager;
+import me.tomski.prophunt.PropHunt;
+import me.tomski.prophunt.ServerManager;
+import org.bukkit.entity.Player;
+
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 
 public class Pinger
 {
     private PropHunt plugin;
     public boolean sentData;
-    
+
     public Pinger(final PropHunt plugin) {
         this.sentData = false;
         this.plugin = plugin;
     }
-    
+
     public void connectToServer(final Player p, final String hub) throws IOException {
         final ByteArrayOutputStream b = new ByteArrayOutputStream();
         final DataOutputStream out = new DataOutputStream(b);
@@ -22,7 +27,7 @@ public class Pinger
         out.writeUTF(hub);
         p.sendPluginMessage(this.plugin, "BungeeCord", b.toByteArray());
     }
-    
+
     public void sendServerDataEmpty() throws IOException {
         if (this.sentData && this.plugin.getServer().getOnlinePlayers().length > 0) {
             final ByteArrayOutputStream b = new ByteArrayOutputStream();
@@ -57,7 +62,7 @@ public class Pinger
             this.plugin.getServer().getOnlinePlayers()[0].sendPluginMessage(this.plugin, "BungeeCord", b.toByteArray());
         }
     }
-    
+
     public void sendServerData() throws IOException {
         if (this.plugin.getServer().getOnlinePlayers().length > 0) {
             final ByteArrayOutputStream b = new ByteArrayOutputStream();

@@ -1,13 +1,15 @@
 package me.tomski.prophunt;
 
-import org.bukkit.event.player.*;
-import me.tomski.bungee.*;
-import java.io.*;
-import org.bukkit.plugin.*;
-import org.bukkit.*;
-import org.bukkit.event.*;
-import org.bukkit.event.server.*;
-import me.tomski.language.*;
+import me.tomski.bungee.Pinger;
+import me.tomski.language.LanguageManager;
+import me.tomski.language.MessageBank;
+import org.bukkit.ChatColor;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.server.ServerListPingEvent;
+
+import java.io.IOException;
 
 public class ServerManager implements Listener
 {
@@ -16,11 +18,11 @@ public class ServerManager implements Listener
     public static int forceMaxPlayersSize;
     public static boolean blockAccessWhilstInGame;
     private PropHunt plugin;
-    
+
     public ServerManager(final PropHunt plugin) {
         this.plugin = plugin;
     }
-    
+
     @EventHandler
     public void playerKick(final PlayerLoginEvent e) throws IOException {
         if (GameManager.gameStatus && ServerManager.blockAccessWhilstInGame) {
@@ -49,7 +51,7 @@ public class ServerManager implements Listener
             e.disallow(PlayerLoginEvent.Result.KICK_FULL, ChatColor.translateAlternateColorCodes('&', MessageBank.SERVER_FULL_MESSAGE.getMsg()));
         }
     }
-    
+
     @EventHandler
     public void playerPing(final ServerListPingEvent e) {
         if (ServerManager.forceMOTD) {
@@ -59,7 +61,7 @@ public class ServerManager implements Listener
             e.setMaxPlayers(ServerManager.forceMaxPlayersSize);
         }
     }
-    
+
     private String getMOTD() {
         final boolean status = GameManager.gameStatus;
         final int time = GameManager.timeleft;

@@ -1,20 +1,24 @@
 package me.tomski.listeners;
 
-import org.bukkit.event.player.*;
-import me.tomski.language.*;
-import me.tomski.utils.*;
-import org.bukkit.event.*;
-import me.tomski.prophunt.*;
-import me.tomski.arenas.*;
+import me.tomski.arenas.ArenaConfig;
+import me.tomski.arenas.ArenaManager;
+import me.tomski.language.MessageBank;
+import me.tomski.prophunt.DisguiseManager;
+import me.tomski.prophunt.GameManager;
+import me.tomski.prophunt.PropHunt;
+import me.tomski.utils.PropHuntMessaging;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 public class SetupListener implements Listener
 {
     private PropHunt plugin;
-    
+
     public SetupListener(final PropHunt ph) {
         this.plugin = ph;
     }
-    
+
     @EventHandler
     public void onBlockPlace(final PlayerInteractEvent e) {
         if (ArenaManager.setupMap.containsKey(e.getPlayer().getName())) {
@@ -59,7 +63,7 @@ public class SetupListener implements Listener
             }
         }
     }
-    
+
     private void ifCompleteFinish(final PlayerInteractEvent e) {
         if (this.plugin.AM.checkComplete()) {
             ArenaManager.currentArena.saveArenaToFile(this.plugin);

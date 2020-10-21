@@ -1,14 +1,22 @@
 package me.tomski.prophuntstorage;
 
-import java.util.logging.*;
-import me.tomski.objects.*;
-import java.util.*;
-import org.bukkit.*;
-import me.tomski.prophunt.*;
-import me.tomski.arenas.*;
-import org.bukkit.configuration.file.*;
-import org.bukkit.configuration.*;
-import java.io.*;
+import me.tomski.arenas.Arena;
+import me.tomski.arenas.ArenaConfig;
+import me.tomski.arenas.ArenaManager;
+import me.tomski.objects.ArenaFileStructureWrapper;
+import me.tomski.objects.LocationBox;
+import me.tomski.prophunt.DisguiseManager;
+import me.tomski.prophunt.GameManager;
+import me.tomski.prophunt.PropHunt;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.logging.Level;
 
 public class ArenaStorage
 {
@@ -16,14 +24,14 @@ public class ArenaStorage
     private File customConfigFile;
     private PropHunt plugin;
     private GameManager GM;
-    
+
     public ArenaStorage(final PropHunt plugin, final GameManager GM) {
         this.StorageFilef = null;
         this.customConfigFile = null;
         this.plugin = plugin;
         this.GM = GM;
     }
-    
+
     public void loadData() {
         if (!this.getStorageFile().contains("Arenas")) {
             this.plugin.getLogger().log(Level.WARNING, "No arenas have been setup!");
@@ -64,7 +72,7 @@ public class ArenaStorage
         }
         this.plugin.getLogger().log(Level.INFO, this.plugin.AM.arenasInRotation.size() + " arenas loaded");
     }
-    
+
     private void loadCustomSettings(final Arena a) {
         if (this.plugin.getConfig().getBoolean("CustomArenaConfigs." + a.getArenaName() + ".usingDefault")) {
             final ArenaConfig AC = new ArenaConfig(DisguiseManager.blockDisguises, GameManager.hiderCLASS, GameManager.seekerCLASS, true);
@@ -78,13 +86,13 @@ public class ArenaStorage
             this.plugin.getLogger().log(Level.INFO, a.getArenaName() + " is using a custom arena Config");
         }
     }
-    
+
     public void saveData() {
         for (final Arena a : ArenaManager.playableArenas.values()) {
             a.saveArenaToFile(this.plugin);
         }
     }
-    
+
     public void reloadStorageFile() {
         if (this.customConfigFile == null) {
             this.customConfigFile = new File(this.plugin.getDataFolder(), "StorageFile.yml");
@@ -96,14 +104,14 @@ public class ArenaStorage
             this.StorageFilef.setDefaults(defConfig);
         }
     }
-    
+
     public FileConfiguration getStorageFile() {
         if (this.StorageFilef == null) {
             this.reloadStorageFile();
         }
         return this.StorageFilef;
     }
-    
+
     public void saveStorageFile() {
         if (this.StorageFilef == null || this.customConfigFile == null) {
             return;

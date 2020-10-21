@@ -1,25 +1,51 @@
 package me.tomski.listeners;
 
-import me.tomski.blocks.*;
-import org.bukkit.plugin.*;
-import me.tomski.arenas.*;
-import org.bukkit.event.*;
-import me.tomski.language.*;
-import java.lang.reflect.*;
-import java.io.*;
-import me.tomski.utils.*;
-import org.bukkit.event.block.*;
-import com.comphenix.protocol.events.*;
-import com.comphenix.protocol.wrappers.*;
-import com.comphenix.protocol.*;
-import org.bukkit.event.entity.*;
-import org.bukkit.entity.*;
-import org.bukkit.event.player.*;
-import me.tomski.prophunt.*;
-import me.tomski.bungee.*;
-import java.util.*;
-import me.tomski.enums.*;
-import org.bukkit.*;
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.wrappers.EnumWrappers;
+import me.tomski.arenas.ArenaManager;
+import me.tomski.blocks.SolidBlock;
+import me.tomski.bungee.Pinger;
+import me.tomski.language.LanguageManager;
+import me.tomski.language.MessageBank;
+import me.tomski.prophunt.BungeeSettings;
+import me.tomski.prophunt.GameManager;
+import me.tomski.prophunt.PlayerManagement;
+import me.tomski.prophunt.PropHunt;
+import me.tomski.prophunt.ShopSettings;
+import me.tomski.utils.ItemMessage;
+import me.tomski.utils.PropHuntMessaging;
+import me.tomski.utils.Reason;
+import me.tomski.utils.SolidBlockTracker;
+import org.bukkit.ChatColor;
+import org.bukkit.Effect;
+import org.bukkit.Location;
+import org.bukkit.Sound;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerKickEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.PlayerToggleSneakEvent;
+
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class PropHuntListener implements Listener
 {
@@ -28,7 +54,7 @@ public class PropHuntListener implements Listener
     private PropHunt PH;
     private List<String> allowedcmds;
     public static Map<Player, Integer> playerOnBlocks;
-    
+
     public PropHuntListener(final PropHunt plugin, final GameManager Gamem) {
         this.GM = null;
         this.PH = null;
@@ -52,7 +78,7 @@ public class PropHuntListener implements Listener
         this.allowedcmds.add("/ph start");
         this.allowedcmds.add("/ph stop");
     }
-    
+
     @EventHandler
     public void onInteract(final PlayerInteractEvent e) {
         if (GameManager.seekers.contains(e.getPlayer().getName()) && this.cancelItemUse(e)) {
@@ -68,7 +94,7 @@ public class PropHuntListener implements Listener
             e.setCancelled(true);
         }
     }
-    
+
     private boolean cancelItemUse(final PlayerInteractEvent e) {
         if (e.getClickedBlock() == null) {
             return false;
@@ -118,7 +144,7 @@ public class PropHuntListener implements Listener
             }
         }
     }
-    
+
     @EventHandler
     public void playerKickEvent(final PlayerKickEvent e) {
         if (e.getReason().contains("Flying")) {
@@ -159,7 +185,7 @@ public class PropHuntListener implements Listener
             }
         }
     }
-    
+
     @EventHandler
     public void onCrouchEvent(final PlayerToggleSneakEvent e) {
         if (GameManager.crouchBlockLock && GameManager.hiders.contains(e.getPlayer().getName())) {
@@ -171,7 +197,7 @@ public class PropHuntListener implements Listener
             }
         }
     }
-    
+
     @EventHandler
     public void onPLayerDrop(final PlayerDropItemEvent e) {
         if (GameManager.hiders.contains(e.getPlayer().getName()) || GameManager.seekers.contains(e.getPlayer().getName())) {
@@ -179,7 +205,7 @@ public class PropHuntListener implements Listener
             PropHuntMessaging.sendMessage(e.getPlayer(), MessageBank.NO_ITEM_SHARING.getMsg());
         }
     }
-    
+
     @EventHandler
     public void onPlayerCommand(final PlayerCommandPreprocessEvent e) {
         if (e.getPlayer().hasPermission("prophunt.admin.commandoverride")) {
@@ -198,7 +224,7 @@ public class PropHuntListener implements Listener
             e.setCancelled(true);
         }
     }
-    
+
     private void refreshDisguises() {
         this.PH.getServer().getScheduler().scheduleSyncDelayedTask(this.PH, new Runnable() {
             @Override
@@ -211,7 +237,7 @@ public class PropHuntListener implements Listener
             }
         }, 20L);
     }
-    
+
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerRespawn(final PlayerRespawnEvent e) {
         if (GameManager.playersQuit.contains(e.getPlayer().getName())) {
@@ -274,7 +300,7 @@ public class PropHuntListener implements Listener
             this.PH.dm.undisguisePlayer(e.getPlayer());
         }
     }
-    
+
     @EventHandler
     public void onPlayerDeath(final PlayerDeathEvent e) throws IllegalAccessException, InvocationTargetException, IOException {
         if (!GameManager.hiders.contains(e.getEntity().getName())) {
@@ -360,7 +386,7 @@ public class PropHuntListener implements Listener
             PropHuntMessaging.broadcastMessageToPlayers(GameManager.hiders, GameManager.seekers, MessageBank.TIME_INCREASE_MESSAGE.getMsg() + GameManager.time_reward);
         }
     }
-    
+
     private void giveCredits(final Player p, final double amount) {
         if (amount <= 0.0 || !ShopSettings.enabled) {
             return;
@@ -382,7 +408,7 @@ public class PropHuntListener implements Listener
         message = message.replace("\\{credits\\}", amount + " " + ShopSettings.currencyName);
         im.sendMessage(p, ChatColor.translateAlternateColorCodes('&', message));
     }
-    
+
     private void giveHiderKillWinnings(final Player p) {
         if (p.hasPermission("prophunt.currency.vip")) {
             this.giveCredits(p, ShopSettings.vipBonus * ShopSettings.pricePerHiderKill);
@@ -391,13 +417,13 @@ public class PropHuntListener implements Listener
             this.giveCredits(p, ShopSettings.pricePerHiderKill);
         }
     }
-    
+
     private void giveHiderBonusTimeWinnings(final Player p) {
         double bonusTime = (System.currentTimeMillis() - this.GM.gameStartTime) / 1000L;
         bonusTime *= ShopSettings.pricePerSecondsHidden;
         this.giveCredits(p, bonusTime);
     }
-    
+
     private void giveSeekerKillWinnings(final Player p) {
         if (p.hasPermission("prophunt.currency.vip")) {
             this.giveCredits(p, ShopSettings.vipBonus * ShopSettings.pricePerSeekerKill);
@@ -406,7 +432,7 @@ public class PropHuntListener implements Listener
             this.giveCredits(p, ShopSettings.pricePerSeekerKill);
         }
     }
-    
+
     private boolean noLivesLeft(final Player p) {
         if (GameManager.seekerLives.get(p) <= 1) {
             return true;
@@ -414,7 +440,7 @@ public class PropHuntListener implements Listener
         GameManager.seekerLives.put(p, GameManager.seekerLives.get(p) - 1);
         return false;
     }
-    
+
     @EventHandler
     public void blockBreakEvent(final BlockBreakEvent e) {
         if (GameManager.spectators.contains(e.getPlayer().getName())) {
@@ -433,7 +459,7 @@ public class PropHuntListener implements Listener
             e.setCancelled(true);
         }
     }
-    
+
     @EventHandler
     public void blockPlaceEvent(final BlockPlaceEvent e) {
         if (GameManager.spectators.contains(e.getPlayer().getName())) {
@@ -452,15 +478,15 @@ public class PropHuntListener implements Listener
             e.setCancelled(true);
         }
     }
-    
+
     private boolean isLastHider() {
         return GameManager.hiders.size() == 1;
     }
-    
+
     private boolean isLastSeeker() {
         return GameManager.seekers.size() == 1;
     }
-    
+
     private void respawnQuick(final Player player) {
         this.PH.getServer().getScheduler().scheduleSyncDelayedTask(this.PH, new Runnable() {
             @Override
@@ -476,20 +502,20 @@ public class PropHuntListener implements Listener
             }
         }, 5L);
     }
-    
+
     private void playHitMarkerEffect(final Location loc) {
         if (GameManager.usingHitmarkers) {
             loc.setY(loc.getY() + 1.0);
             loc.getWorld().playEffect(loc, Effect.POTION_BREAK, 19);
         }
     }
-    
+
     private void playerHitSoundEffect(final Location loc) {
         if (GameManager.usingHitsounds) {
             loc.getWorld().playSound(loc, Sound.ORB_PICKUP, 1.0f, 1.0f);
         }
     }
-    
+
     @EventHandler
     public void playerDamange(final EntityDamageByEntityEvent e) {
         if (e.getEntity() instanceof Player && e.getDamager() instanceof Player) {
@@ -543,7 +569,7 @@ public class PropHuntListener implements Listener
             }
         }
     }
-    
+
     @EventHandler
     public void onlogin(final PlayerJoinEvent e) {
         if (GameManager.dedicated) {
@@ -566,7 +592,7 @@ public class PropHuntListener implements Listener
             GameManager.playersQuit.remove(e.getPlayer().getName());
         }
     }
-    
+
     @EventHandler
     public void onLogout(final PlayerQuitEvent e) throws IOException {
         if (GameManager.useSideStats) {
@@ -599,7 +625,7 @@ public class PropHuntListener implements Listener
             GameManager.playersQuit.add(e.getPlayer().getName());
         }
     }
-    
+
     static {
         PropHuntListener.tempIgnoreUndisguise = new ArrayList<Player>();
         PropHuntListener.playerOnBlocks = new HashMap<Player, Integer>();
