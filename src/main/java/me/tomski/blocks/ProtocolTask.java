@@ -5,6 +5,7 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.reflect.FieldAccessException;
+import com.comphenix.protocol.wrappers.BlockPosition;
 import com.comphenix.protocol.wrappers.EnumWrappers;
 import me.tomski.prophunt.GameManager;
 import me.tomski.prophunt.PropHunt;
@@ -13,50 +14,30 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
-public class ProtocolTask implements Listener
-{
-    private PropHunt plugin;
+// 1.8 protocol spec: https://wiki.vg/index.php?title=Protocol&oldid=7407#Use_Entity
+public class ProtocolTask implements Listener {
+    private final PropHunt plugin;
 
-    public ProtocolTask(final PropHunt plugin) {
+    public ProtocolTask(PropHunt plugin) {
         this.plugin = plugin;
     }
 
     public void initProtocol() {
-        PropHunt.protocolManager.getAsynchronousManager().registerAsyncHandler(new PacketAdapter(this.plugin, new PacketType[] { PacketType.Play.Client.BLOCK_PLACE }) {
-            public void onPacketSending(final PacketEvent event) {
-                System.out.println("sent packet " + event.getPacketType());
-            }
-
+        PropHunt.protocolManager.getAsynchronousManager().registerAsyncHandler(new PacketAdapter(this.plugin, PacketType.Play.Client.BLOCK_PLACE) {
             public void onPacketReceiving(final PacketEvent event) {
-                if (GameManager.hiders.contains(event.getPlayer().getName())) {
-                    final int x = event.getPacket().getIntegers().read(0);
-                    final int y = event.getPacket().getIntegers().read(1);
-                    final int z = event.getPacket().getIntegers().read(2);
+                if (GameManager.hiders.contains(event.getPlayer().getName()) ||
+                    GameManager.seekers.contains(event.getPlayer().getName())) {
+                    BlockPosition pos = event.getPacket().getBlockPositionModifier().read(0);
                     for (final SolidBlock s : SolidBlockTracker.solidBlocks.values()) {
-                        if (s.loc.getBlockX() == x && s.loc.getBlockY() == y && s.loc.getBlockZ() == z) {
-                            event.setCancelled(true);
-                        }
-                    }
-                }
-                if (GameManager.seekers.contains(event.getPlayer().getName())) {
-                    final int x = event.getPacket().getIntegers().read(0);
-                    final int y = event.getPacket().getIntegers().read(1);
-                    final int z = event.getPacket().getIntegers().read(2);
-                    for (final SolidBlock s : SolidBlockTracker.solidBlocks.values()) {
-                        if (s.loc.getBlockX() == x && s.loc.getBlockY() == y && s.loc.getBlockZ() == z) {
+                        if (s.loc.getBlockX() == pos.getX() && s.loc.getBlockY() == pos.getY() && s.loc.getBlockZ() == pos.getZ()) {
                             event.setCancelled(true);
                         }
                     }
                 }
             }
         }).syncStart();
-        PropHunt.protocolManager.getAsynchronousManager().registerAsyncHandler(new PacketAdapter(this.plugin, new PacketType[] { PacketType.Play.Client.ARM_ANIMATION }) {
-            public void onPacketSending(final PacketEvent event) {
-                System.out.println("sent packet " + event.getPacketType());
-            }
-
+        PropHunt.protocolManager.getAsynchronousManager().registerAsyncHandler(new PacketAdapter(this.plugin, PacketType.Play.Client.ARM_ANIMATION) {
             public void onPacketReceiving(final PacketEvent event) {
-                final int ATTACK_REACH = 3;
                 final Player observer = event.getPlayer();
                 final Location observerPos = observer.getEyeLocation();
                 final Vector3D observerDir = new Vector3D(observerPos.getDirection());
@@ -69,14 +50,16 @@ public class ProtocolTask implements Listener
                             final Vector3D targetPos = new Vector3D(target.getLocation());
                             final Vector3D minimum = targetPos.add(-0.5, 0.0, -0.5);
                             final Vector3D maximum = targetPos.add(0.5, 1.67, 0.5);
-                            if (!ProtocolTask.this.hasIntersection(observerStart, observerEnd, minimum, maximum) || (hit != null && hit.getLocation().distanceSquared(observerPos) <= target.getLocation().distanceSquared(observerPos))) {
+                            if (!ProtocolTask.this.hasIntersection(observerStart, observerEnd, minimum, maximum) ||
+                                (hit != null && hit.getLocation().distanceSquared(observerPos) <= target.getLocation().distanceSquared(observerPos))) {
                                 continue;
                             }
                             hit = target;
                         }
                     }
+                } catch (FieldAccessException ex) {
+                    ex.printStackTrace();
                 }
-                catch (FieldAccessException ex) {}
                 if (hit != null) {
                     final PacketContainer useEntity = PropHunt.protocolManager.createPacket(PacketType.Play.Client.USE_ENTITY);
                     useEntity.getIntegers().write(0, hit.getEntityId());
@@ -99,14 +82,5 @@ public class ProtocolTask implements Listener
         final Vector3D c = p1.add(d).subtract(min.add(max).multiply(0.5));
         final Vector3D ad = d.abs();
         return Math.abs(c.x) <= e.x + ad.x && Math.abs(c.y) <= e.y + ad.y && Math.abs(c.z) <= e.z + ad.z && Math.abs(d.y * c.z - d.z * c.y) <= e.y * ad.z + e.z * ad.y + 9.999999747378752E-5 && Math.abs(d.z * c.x - d.x * c.z) <= e.z * ad.x + e.x * ad.z + 9.999999747378752E-5 && Math.abs(d.x * c.y - d.y * c.x) <= e.x * ad.y + e.y * ad.x + 9.999999747378752E-5;
-    }
-
-    private void toggleVisibilityNative(final Player observer, final Player target) {
-        if (observer.canSee(target)) {
-            observer.hidePlayer(target);
-        }
-        else {
-            observer.showPlayer(target);
-        }
     }
 }
