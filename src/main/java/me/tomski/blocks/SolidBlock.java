@@ -4,6 +4,8 @@ import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.reflect.FieldAccessException;
+import com.comphenix.protocol.wrappers.BlockPosition;
+import com.comphenix.protocol.wrappers.WrappedBlockData;
 import me.tomski.listeners.PropHuntListener;
 import me.tomski.objects.SimpleDisguise;
 import me.tomski.prophunt.PropHunt;
@@ -59,10 +61,13 @@ public class SolidBlock
     private PacketContainer getBlockPacket() {
         this.blockChange = this.pm.createPacket(PacketType.Play.Server.BLOCK_CHANGE);
         try {
-            this.blockChange.getIntegers().write(0, this.loc.getBlockX()).write(1, this.loc.getBlockY()).write(2, this.loc.getBlockZ()).write(3, this.damage);
-            this.blockChange.getBlocks().write(0, Material.getMaterial(this.id));
-        }
-        catch (FieldAccessException e) {
+            BlockPosition pos = new BlockPosition(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+            WrappedBlockData data = WrappedBlockData.createData(Material.getMaterial(id), damage);
+
+            blockChange.getBlockPositionModifier().write(0, pos);
+            blockChange.getBlockData().write(0, data);
+        } catch (FieldAccessException e) {
+            e.printStackTrace();
             System.out.println("PropHunt: Error with block change packet");
         }
         return this.blockChange;
@@ -72,10 +77,14 @@ public class SolidBlock
         this.dead = true;
         this.blockChange = this.pm.createPacket(PacketType.Play.Server.BLOCK_CHANGE);
         try {
-            this.blockChange.getIntegers().write(0, this.loc.getBlockX()).write(1, this.loc.getBlockY()).write(2, this.loc.getBlockZ()).write(3, 0);
-            this.blockChange.getBlocks().write(0, Material.AIR);
-        }
-        catch (FieldAccessException e) {
+            // TODO: Restore original data for this location, e.g. when standing in a sign?
+            BlockPosition pos = new BlockPosition(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+            WrappedBlockData data = WrappedBlockData.createData(Material.AIR);
+
+            blockChange.getBlockPositionModifier().write(0, pos);
+            blockChange.getBlockData().write(0, data);
+        } catch (FieldAccessException e) {
+            e.printStackTrace();
             System.out.println("PropHunt: Error with block change packet");
         }
         PropHuntListener.tempIgnoreUndisguise.remove(this.owner);
