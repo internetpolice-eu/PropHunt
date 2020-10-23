@@ -7,6 +7,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.logging.Level;
 
 public class ShopConfig
@@ -24,14 +25,14 @@ public class ShopConfig
     }
 
     public void reloadShopConfig() {
-        if (this.customConfigFile == null) {
-            this.customConfigFile = new File(this.plugin.getDataFolder(), "Shop.yml");
+        if (customConfigFile == null) {
+            customConfigFile = new File(plugin.getDataFolder(), "Shop.yml");
         }
-        this.StorageFilef = YamlConfiguration.loadConfiguration(this.customConfigFile);
-        final InputStream defConfigStream = this.plugin.getResource("Shop.yml");
+        StorageFilef = YamlConfiguration.loadConfiguration(customConfigFile);
+        InputStream defConfigStream = plugin.getResource("Shop.yml");
         if (defConfigStream != null) {
-            final YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
-            this.StorageFilef.setDefaults(defConfig);
+            YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(new InputStreamReader(defConfigStream));
+            StorageFilef.setDefaults(defConfig);
         }
     }
 

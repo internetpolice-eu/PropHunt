@@ -509,7 +509,7 @@ public class PropHuntListener implements Listener
 
     private void playerHitSoundEffect(final Location loc) {
         if (GameManager.usingHitsounds) {
-            loc.getWorld().playSound(loc, Sound.ORB_PICKUP, 1.0f, 1.0f);
+            loc.getWorld().playSound(loc, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0f, 1.0f);
         }
     }
 

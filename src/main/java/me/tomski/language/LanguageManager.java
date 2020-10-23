@@ -7,6 +7,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.logging.Level;
 
 public class LanguageManager
@@ -53,14 +54,14 @@ public class LanguageManager
     }
 
     public void reloadLanguage() {
-        if (this.customLanguageFile == null) {
-            this.customLanguageFile = new File(this.plugin.getDataFolder(), "Language.yml");
+        if (customLanguageFile == null) {
+            customLanguageFile = new File(plugin.getDataFolder(), "Language.yml");
         }
-        this.languageConfig = YamlConfiguration.loadConfiguration(this.customLanguageFile);
-        final InputStream defConfigStream = this.plugin.getResource("Language.yml");
+        languageConfig = YamlConfiguration.loadConfiguration(customLanguageFile);
+        InputStream defConfigStream = plugin.getResource("Language.yml");
         if (defConfigStream != null) {
-            final YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
-            this.languageConfig.setDefaults(defConfig);
+            YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(new InputStreamReader(defConfigStream));
+            languageConfig.setDefaults(defConfig);
         }
     }
 

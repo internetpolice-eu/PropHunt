@@ -16,6 +16,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.logging.Level;
 
 public class ArenaStorage
@@ -94,14 +95,14 @@ public class ArenaStorage
     }
 
     public void reloadStorageFile() {
-        if (this.customConfigFile == null) {
-            this.customConfigFile = new File(this.plugin.getDataFolder(), "StorageFile.yml");
+        if (customConfigFile == null) {
+            customConfigFile = new File(plugin.getDataFolder(), "StorageFile.yml");
         }
-        this.StorageFilef = YamlConfiguration.loadConfiguration(this.customConfigFile);
-        final InputStream defConfigStream = this.plugin.getResource("StorageFile.yml");
+        StorageFilef = YamlConfiguration.loadConfiguration(customConfigFile);
+        InputStream defConfigStream = plugin.getResource("StorageFile.yml");
         if (defConfigStream != null) {
-            final YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
-            this.StorageFilef.setDefaults(defConfig);
+            YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(new InputStreamReader(defConfigStream));
+            StorageFilef.setDefaults(defConfig);
         }
     }
 

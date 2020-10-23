@@ -7,6 +7,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -98,14 +99,14 @@ public class ScoreboardTranslate
     }
 
     public void reloadTranslate() {
-        if (this.customLanguageFile == null) {
-            this.customLanguageFile = new File(this.plugin.getDataFolder(), "ScoreboardTranslate.yml");
+        if (customLanguageFile == null) {
+            customLanguageFile = new File(plugin.getDataFolder(), "ScoreboardTranslate.yml");
         }
-        this.translateConfig = YamlConfiguration.loadConfiguration(this.customLanguageFile);
-        final InputStream defConfigStream = this.plugin.getResource("ScoreboardTranslate.yml");
+        translateConfig = YamlConfiguration.loadConfiguration(customLanguageFile);
+        InputStream defConfigStream = plugin.getResource("ScoreboardTranslate.yml");
         if (defConfigStream != null) {
-            final YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
-            this.translateConfig.setDefaults(defConfig);
+            YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(new InputStreamReader(defConfigStream));
+            translateConfig.setDefaults(defConfig);
         }
     }
 
