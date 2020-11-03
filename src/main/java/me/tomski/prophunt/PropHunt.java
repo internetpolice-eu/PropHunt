@@ -43,8 +43,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
-public class PropHunt extends JavaPlugin implements Listener
-{
+public class PropHunt extends JavaPlugin implements Listener {
     public DisguiseManager dm;
     public static ProtocolManager protocolManager;
     public ArenaStorage AS;
@@ -71,7 +70,7 @@ public class PropHunt extends JavaPlugin implements Listener
         try {
             this.init();
             if (this.shouldDisable) {
-                this.getLogger().warning("Disabling plugin. Reason: DisguiseCraft or LibsDisguises not found, please install then reboot");
+                this.getLogger().warning("Disabling plugin. Reason: LibsDisguises not found, please install then reboot");
                 this.getPluginLoader().disablePlugin(this);
                 return;
             }
@@ -98,16 +97,12 @@ public class PropHunt extends JavaPlugin implements Listener
         this.GM = new GameManager(this);
         this.AS = new ArenaStorage(this, this.GM);
         this.AM = new ArenaManager(this);
-        if (this.getServer().getPluginManager().isPluginEnabled("DisguiseCraft")) {
-            this.dm = new DisguiseCraftManager(this);
-            this.getServer().getPluginManager().registerEvents(this.dm, this);
-        }
-        else {
-            if (!this.getServer().getPluginManager().isPluginEnabled("LibsDisguises")) {
-                this.shouldDisable = true;
-                return;
-            }
-            this.dm = new LibsDisguiseManager(this);
+        if (getServer().getPluginManager().isPluginEnabled("LibsDisguises")) {
+            dm = new LibsDisguiseManager(this);
+            getServer().getPluginManager().registerEvents(dm, this);
+        } else {
+            shouldDisable = true;
+            return;
         }
         this.shopManager = new ShopManager(this);
         this.loadProtocolManager();
