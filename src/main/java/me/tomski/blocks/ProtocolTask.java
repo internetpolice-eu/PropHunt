@@ -14,7 +14,8 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
-// 1.8 protocol spec: https://wiki.vg/index.php?title=Protocol&oldid=7407#Use_Entity
+// 1.8 protocol spec: https://wiki.vg/index.php?title=Protocol&oldid=7407
+// 1.12 protocol spec: https://wiki.vg/index.php?title=Protocol&oldid=14204
 public class ProtocolTask implements Listener {
     private final PropHunt plugin;
 
@@ -23,7 +24,7 @@ public class ProtocolTask implements Listener {
     }
 
     public void initProtocol() {
-        PropHunt.protocolManager.getAsynchronousManager().registerAsyncHandler(new PacketAdapter(this.plugin, PacketType.Play.Client.BLOCK_PLACE) {
+        PropHunt.protocolManager.getAsynchronousManager().registerAsyncHandler(new PacketAdapter(this.plugin, PacketType.Play.Client.USE_ITEM) {
             public void onPacketReceiving(final PacketEvent event) {
                 if (GameManager.hiders.contains(event.getPlayer().getName()) ||
                     GameManager.seekers.contains(event.getPlayer().getName())) {
