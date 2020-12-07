@@ -3,7 +3,6 @@ package me.tomski.prophunt;
 import me.tomski.arenas.ArenaConfig;
 import me.tomski.objects.Loadout;
 import me.tomski.objects.SimpleDisguise;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
@@ -12,16 +11,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-public class DisguiseManager implements Listener
-{
-    private static PropHunt plugin;
+public class DisguiseManager implements Listener {
+    protected PropHunt plugin;
     public static Map<Integer, SimpleDisguise> blockDisguises;
     public static Map<Player, SimpleDisguise> preChosenDisguise;
     public static Map<Player, Loadout> loadouts;
     boolean shouldDisable;
 
     public DisguiseManager(final PropHunt plugin) {
-        this.shouldDisable = false;
+        this.plugin = plugin;
+        shouldDisable = false;
     }
 
     public boolean isDisguised(final Player p) {
@@ -36,10 +35,6 @@ public class DisguiseManager implements Listener
 
     public String getDisguiseName(final Player p) {
         return "";
-    }
-
-    private String parseIdToName(final int id) {
-        return Material.getMaterial(id).name();
     }
 
     public void randomDisguise(final Player p, final ArenaConfig ac) {
@@ -61,15 +56,15 @@ public class DisguiseManager implements Listener
     }
 
     public boolean shouldDisable() {
-        return this.shouldDisable;
+        return shouldDisable;
     }
 
     public void toggleBlockLock(final PlayerToggleSneakEvent e) {
     }
 
     static {
-        DisguiseManager.blockDisguises = new HashMap<Integer, SimpleDisguise>();
-        DisguiseManager.preChosenDisguise = new HashMap<Player, SimpleDisguise>();
-        DisguiseManager.loadouts = new HashMap<Player, Loadout>();
+        blockDisguises = new HashMap<>();
+        preChosenDisguise = new HashMap<>();
+        loadouts = new HashMap<>();
     }
 }

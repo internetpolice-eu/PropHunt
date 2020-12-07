@@ -704,25 +704,20 @@ public class PropHunt extends JavaPlugin implements Listener {
 
     public int loadBlockDisguises() {
         int i = 0;
-        if (this.getConfig().contains("block-disguises")) {
-            final List<String> blockIds = this.getConfig().getStringList("block-disguises");
-            for (final String item : blockIds) {
-                DisguiseManager.blockDisguises.put(i, new SimpleDisguise(item));
+        if (getConfig().contains("block-disguises")) {
+            List<String> blockIds = getConfig().getStringList("block-disguises");
+            for (String item : blockIds) {
+                Material material = Material.matchMaterial(item);
+                if (material == null) {
+                    getLogger().warning("Invalid block-disguise configured: " + item);
+                    continue;
+                }
+
+                DisguiseManager.blockDisguises.put(i, new SimpleDisguise(material));
                 ++i;
             }
         }
         return i;
-    }
-
-    private String parseDisguise(final String item) {
-        final String[] split = item.split(":");
-        if (split.length == 2 && this.isInt(split[0]) && this.isInt(split[1])) {
-            return item;
-        }
-        if (this.isInt(item)) {
-            return item;
-        }
-        return null;
     }
 
     private boolean isInt(final String item) {
@@ -958,13 +953,19 @@ public class PropHunt extends JavaPlugin implements Listener {
         return null;
     }
 
-    public Map<Integer, SimpleDisguise> getCustomDisguises(final String arenaName) {
+    public Map<Integer, SimpleDisguise> getCustomDisguises(String arenaName) {
         int i = 0;
-        final Map<Integer, SimpleDisguise> disguiseMap = new HashMap<Integer, SimpleDisguise>();
-        if (this.getConfig().contains("CustomArenaConfigs." + arenaName + ".block-disguises")) {
-            final List<String> blockIds = this.getConfig().getStringList("CustomArenaConfigs." + arenaName + ".block-disguises");
-            for (final String item : blockIds) {
-                disguiseMap.put(i, new SimpleDisguise(item));
+        Map<Integer, SimpleDisguise> disguiseMap = new HashMap<>();
+        if (getConfig().contains("CustomArenaConfigs." + arenaName + ".block-disguises")) {
+            List<String> blockIds = getConfig().getStringList("CustomArenaConfigs." + arenaName + ".block-disguises");
+            for (String item : blockIds) {
+                Material material = Material.matchMaterial(item);
+                if (material == null) {
+                    getLogger().warning("Invalid custom-block-disguise configured: " + item);
+                    continue;
+                }
+
+                disguiseMap.put(i, new SimpleDisguise(material));
                 ++i;
             }
         }

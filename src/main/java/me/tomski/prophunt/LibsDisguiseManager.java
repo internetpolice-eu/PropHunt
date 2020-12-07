@@ -4,14 +4,12 @@ import me.libraryaddict.disguise.DisguiseAPI;
 import me.libraryaddict.disguise.disguisetypes.Disguise;
 import me.libraryaddict.disguise.disguisetypes.DisguiseType;
 import me.libraryaddict.disguise.disguisetypes.MiscDisguise;
-import me.libraryaddict.disguise.disguisetypes.MobDisguise;
 import me.libraryaddict.disguise.disguisetypes.watchers.FallingBlockWatcher;
 import me.tomski.arenas.ArenaConfig;
 import me.tomski.language.MessageBank;
 import me.tomski.objects.Loadout;
 import me.tomski.objects.SimpleDisguise;
 import me.tomski.utils.PropHuntMessaging;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -19,7 +17,6 @@ import java.util.Map;
 import java.util.logging.Level;
 
 public class LibsDisguiseManager extends DisguiseManager {
-    private static PropHunt plugin;
     public static Map<Integer, SimpleDisguise> blockDisguises;
     public static Map<Player, SimpleDisguise> preChosenDisguise;
     public static Map<Player, Loadout> loadouts;
@@ -31,10 +28,7 @@ public class LibsDisguiseManager extends DisguiseManager {
     }
 
     private Disguise getLibsDisguise(final SimpleDisguise sd) {
-        if (sd.getEntityType() == null) {
-            return new MiscDisguise(DisguiseType.FALLING_BLOCK, sd.getMaterial());
-        }
-        return new MobDisguise(DisguiseType.getType(sd.getEntityType()));
+        return new MiscDisguise(DisguiseType.FALLING_BLOCK, sd.getMaterial());
     }
 
     @Override
@@ -44,7 +38,7 @@ public class LibsDisguiseManager extends DisguiseManager {
 
     @Override
     public void disguisePlayer(final Player p, final SimpleDisguise d) {
-        final Disguise dis = this.getLibsDisguise(d);
+        final Disguise dis = getLibsDisguise(d);
         DisguiseAPI.disguiseToAll(p, dis);
     }
 
@@ -55,20 +49,20 @@ public class LibsDisguiseManager extends DisguiseManager {
 
     @Override
     public String getDisguiseName(final Player p) {
-        return DisguiseAPI.getDisguise(p).getType().equals(DisguiseType.FALLING_BLOCK) ? this.parseIdToName(((MiscDisguise)DisguiseAPI.getDisguise(p)).getId()) : DisguiseAPI.getDisguise(p).getEntity().getType().name();
-    }
-
-    private String parseIdToName(final int id) {
-        return Material.getMaterial(id).name();
+        if (DisguiseAPI.getDisguise(p).getType() == DisguiseType.FALLING_BLOCK) {
+            FallingBlockWatcher watcher = (FallingBlockWatcher) DisguiseAPI.getDisguise(p).getWatcher();
+            return watcher.getBlock().getType().name();
+        }
+        return DisguiseAPI.getDisguise(p).getEntity().getType().name();
     }
 
     @Override
     public void randomDisguise(final Player p, final ArenaConfig ac) {
-        if (LibsDisguiseManager.preChosenDisguise.containsKey(p)) {
-            final SimpleDisguise simpleDisguise = LibsDisguiseManager.preChosenDisguise.get(p);
-            this.disguisePlayer(p, simpleDisguise);
+        if (preChosenDisguise.containsKey(p)) {
+            final SimpleDisguise simpleDisguise = preChosenDisguise.get(p);
+            disguisePlayer(p, simpleDisguise);
             PropHuntMessaging.sendMessage(p, MessageBank.DISGUISE_MESSAGE.getMsg() + parseDisguiseToName(simpleDisguise));
-            LibsDisguiseManager.preChosenDisguise.remove(p);
+            preChosenDisguise.remove(p);
             return;
         }
         final SimpleDisguise ds = DisguiseManager.getRandomDisguiseObject(ac.getArenaDisguises());
@@ -76,9 +70,9 @@ public class LibsDisguiseManager extends DisguiseManager {
             PropHuntMessaging.sendMessage(p, MessageBank.DISGUISE_ERROR.getMsg());
             return;
         }
-        this.disguisePlayer(p, ds);
+        disguisePlayer(p, ds);
         PropHuntMessaging.sendMessage(p, MessageBank.DISGUISE_MESSAGE.getMsg() + parseDisguiseToName(ds));
-        LibsDisguiseManager.preChosenDisguise.remove(p);
+        preChosenDisguise.remove(p);
     }
 
     public static String parseDisguiseToName(final SimpleDisguise ds) {
@@ -89,14 +83,14 @@ public class LibsDisguiseManager extends DisguiseManager {
     public SimpleDisguise getSimpleDisguise(final Player p) {
         if (DisguiseAPI.getDisguise(p).getType().equals(DisguiseType.FALLING_BLOCK)) {
             FallingBlockWatcher watcher = (FallingBlockWatcher) (DisguiseAPI.getDisguise(p)).getWatcher();
-            return new SimpleDisguise(watcher.getBlock().getType(), null);
+            return new SimpleDisguise(watcher.getBlock().getType());
         }
         return null;
     }
 
     static {
-        LibsDisguiseManager.blockDisguises = new HashMap<>();
-        LibsDisguiseManager.preChosenDisguise = new HashMap<>();
-        LibsDisguiseManager.loadouts = new HashMap<>();
+        blockDisguises = new HashMap<>();
+        preChosenDisguise = new HashMap<>();
+        loadouts = new HashMap<>();
     }
 }

@@ -139,12 +139,11 @@ SeekerClass:
   Leggings: 312 1:4
   Boots: 313 2:1
 block-disguises:
-- 1
-- 2
-- 3
-- 5
-- 6
-- 7
-- 81
-- 57
-- 71
+- BEDROCK
+- CACTUS
+- DIAMOND_BLOCK
+- DIRT
+- GRASS
+- SAPLING
+- STONE
+- WOOD
