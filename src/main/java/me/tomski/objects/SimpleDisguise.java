@@ -2,55 +2,44 @@ package me.tomski.objects;
 
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
+import org.jetbrains.annotations.Nullable;
 
-public class SimpleDisguise
-{
-    private int id;
-    private int damage;
+public class SimpleDisguise {
+    private @Nullable Material material;
     private EntityType ent;
     private String name;
 
-    public SimpleDisguise(final int id, final int damage, final EntityType ent) {
-        this.id = id;
-        this.damage = damage;
+    public SimpleDisguise(Material material, EntityType ent) {
+        this.material = material;
         this.ent = ent;
-        this.name = this.initName();
+        this.name = initName();
     }
 
-    public SimpleDisguise(final String configString) {
+    public SimpleDisguise(String configString) {
         if (configString.startsWith("e:")) {
-            this.ent = EntityType.fromName(configString.substring(2));
+            ent = EntityType.fromName(configString.substring(2));
+        } else {
+            material = Material.getMaterial(Integer.parseInt(configString));
         }
-        else if (configString.split(":").length == 2) {
-            this.id = Integer.parseInt(configString.split(":")[0]);
-            this.damage = Integer.parseInt(configString.split(":")[1]);
-        }
-        else {
-            this.id = Integer.parseInt(configString);
-        }
-        this.name = this.initName();
+        name = initName();
     }
 
     private String initName() {
-        if (this.ent == null) {
-            return Material.getMaterial(this.id).name();
+        if (ent == null) {
+            return material.name();
         }
-        return this.ent.name().toLowerCase().replaceAll("_", " ");
+        return ent.name().toLowerCase().replaceAll("_", " ");
     }
 
     public String getName() {
-        return this.name;
+        return name;
     }
 
-    public Integer getID() {
-        return this.id;
-    }
-
-    public int getDamage() {
-        return this.damage;
+    public @Nullable Material getMaterial() {
+        return material;
     }
 
     public EntityType getEntityType() {
-        return this.ent;
+        return ent;
     }
 }

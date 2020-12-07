@@ -5,6 +5,7 @@ import me.libraryaddict.disguise.disguisetypes.Disguise;
 import me.libraryaddict.disguise.disguisetypes.DisguiseType;
 import me.libraryaddict.disguise.disguisetypes.MiscDisguise;
 import me.libraryaddict.disguise.disguisetypes.MobDisguise;
+import me.libraryaddict.disguise.disguisetypes.watchers.FallingBlockWatcher;
 import me.tomski.arenas.ArenaConfig;
 import me.tomski.language.MessageBank;
 import me.tomski.objects.Loadout;
@@ -31,7 +32,7 @@ public class LibsDisguiseManager extends DisguiseManager {
 
     private Disguise getLibsDisguise(final SimpleDisguise sd) {
         if (sd.getEntityType() == null) {
-            return new MiscDisguise(DisguiseType.FALLING_BLOCK, sd.getID(), sd.getDamage());
+            return new MiscDisguise(DisguiseType.FALLING_BLOCK, sd.getMaterial());
         }
         return new MobDisguise(DisguiseType.getType(sd.getEntityType()));
     }
@@ -87,7 +88,8 @@ public class LibsDisguiseManager extends DisguiseManager {
     @Override
     public SimpleDisguise getSimpleDisguise(final Player p) {
         if (DisguiseAPI.getDisguise(p).getType().equals(DisguiseType.FALLING_BLOCK)) {
-            return new SimpleDisguise(((MiscDisguise)DisguiseAPI.getDisguise(p)).getId(), ((MiscDisguise)DisguiseAPI.getDisguise(p)).getData(), null);
+            FallingBlockWatcher watcher = (FallingBlockWatcher) (DisguiseAPI.getDisguise(p)).getWatcher();
+            return new SimpleDisguise(watcher.getBlock().getType(), null);
         }
         return null;
     }

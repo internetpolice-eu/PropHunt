@@ -16,15 +16,12 @@ import org.bukkit.entity.Player;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 
-public class SolidBlock
-{
+public class SolidBlock {
     public Player owner;
     public Location loc;
-    public int id;
-    int damage;
     ProtocolManager pm;
     PacketContainer blockChange;
-    private SimpleDisguise d;
+    public SimpleDisguise d;
     public boolean dead;
 
     public SolidBlock(final Location loc, final Player p, final ProtocolManager pm, final PropHunt plugin) throws InvocationTargetException {
@@ -32,8 +29,6 @@ public class SolidBlock
         this.loc = loc.clone();
         this.pm = pm;
         this.d = plugin.dm.getSimpleDisguise(p);
-        this.id = this.d.getID();
-        this.damage = this.d.getDamage();
         this.blockChange = this.getBlockPacket();
         plugin.hidePlayer(this.owner = p, this.owner.getInventory().getArmorContents());
         PropHuntListener.tempIgnoreUndisguise.add(this.owner);
@@ -62,7 +57,7 @@ public class SolidBlock
         this.blockChange = this.pm.createPacket(PacketType.Play.Server.BLOCK_CHANGE);
         try {
             BlockPosition pos = new BlockPosition(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
-            WrappedBlockData data = WrappedBlockData.createData(Material.getMaterial(id), damage);
+            WrappedBlockData data = WrappedBlockData.createData(d.getMaterial());
 
             blockChange.getBlockPositionModifier().write(0, pos);
             blockChange.getBlockData().write(0, data);

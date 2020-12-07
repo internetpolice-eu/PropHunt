@@ -72,7 +72,7 @@ public class BlockChooser implements Listener
     }
 
     private SimpleDisguise parseItemToDisguise(final ItemStack itemStack) {
-        return new SimpleDisguise(itemStack.getTypeId(), itemStack.getData().getData(), null);
+        return new SimpleDisguise(itemStack.getType(), null);
     }
 
     @EventHandler
