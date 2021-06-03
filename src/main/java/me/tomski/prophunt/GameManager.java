@@ -337,7 +337,7 @@ public class GameManager
                 break;
             }
             case VAULT: {
-                this.plugin.vaultUtils.economy.depositPlayer(p.getName(), amount);
+                this.plugin.vaultUtils.economy.depositPlayer(p, amount);
                 break;
             }
         }

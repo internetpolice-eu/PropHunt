@@ -731,10 +731,6 @@ public class PropHunt extends JavaPlugin implements Listener {
         return true;
     }
 
-    private boolean isItem(final int item) {
-        return Material.getMaterial(item) != null && Material.getMaterial(item).isBlock();
-    }
-
     public void setupClasses() {
         if (this.getConfig().contains("SeekerClass")) {
             ItemStack helmet = null;
@@ -856,75 +852,26 @@ public class PropHunt extends JavaPlugin implements Listener {
         }
     }
 
-    private ItemStack parseITEMStringToStack(final String s) {
-        ItemStack stack = null;
-        final String[] enchantsplit = s.split(" ");
-        if (enchantsplit.length > 1) {
-            final String item = enchantsplit[0];
-            final String enchants = enchantsplit[1];
-            final String[] totalenchants = enchants.split(";");
-            int ENCHANTID = 0;
-            int ENCHANTLEVEL = 0;
-            final Map<Enchantment, Integer> TOTEnchants = new HashMap<Enchantment, Integer>();
-            int itemint = 0;
-            try {
-                itemint = Integer.parseInt(item);
-            }
-            catch (NumberFormatException nfe) {
-                return null;
-            }
-            for (int i = totalenchants.length, z = 0; z < i; ++z) {
-                final String[] subsplit = totalenchants[z].split(":");
-                try {
-                    ENCHANTID = Integer.parseInt(subsplit[0]);
-                    ENCHANTLEVEL = Integer.parseInt(subsplit[1]);
-                }
-                catch (NumberFormatException nfe2) {
-                    return null;
-                }
-                TOTEnchants.put(Enchantment.getById(ENCHANTID), ENCHANTLEVEL);
-            }
-            stack = new ItemStack(itemint, 1);
-            stack.addUnsafeEnchantments(TOTEnchants);
-            return stack;
-        }
-        final String[] damagesplit = s.split(":");
-        if (damagesplit.length > 2) {
-            final String id = damagesplit[0];
-            final String damage = damagesplit[1];
-            final String amount = damagesplit[2];
-            int ID = 0;
-            short DAMAGE = 0;
-            int AMOUNT = 0;
-            try {
-                ID = Integer.parseInt(id);
-                DAMAGE = Short.parseShort(damage);
-                AMOUNT = Integer.parseInt(amount);
-            }
-            catch (NumberFormatException NFE) {
-                return null;
-            }
-            stack = new ItemStack(Material.getMaterial(ID), AMOUNT, DAMAGE);
-            return stack;
-        }
-        final String[] normalsplit = s.split(":");
-        final String id2 = normalsplit[0];
-        final String amount = normalsplit[1];
-        int ID = 0;
-        int AMOUNT2 = 0;
+    public ItemStack parseITEMStringToStack(final String s) {
+        final String[] itemSplit = s.split(":");
+        int itemAmount;
         try {
-            ID = Integer.parseInt(id2);
-            AMOUNT2 = Integer.parseInt(amount);
-        }
-        catch (NumberFormatException NFE2) {
+            itemAmount = Integer.parseInt(itemSplit[1]);
+        } catch (NumberFormatException ex) {
             return null;
         }
-        stack = new ItemStack(Material.getMaterial(ID), AMOUNT2);
-        return stack;
+
+        Material material = Material.matchMaterial(itemSplit[0]);
+        if (material != null) {
+            return new ItemStack(material, itemAmount);
+        }
+
+        getLogger().warning("Invalid material: " + itemSplit[0]);
+        return null;
     }
 
     private List<PotionEffect> loadEffectsList(final String path) {
-        final List<PotionEffect> plist = new ArrayList<PotionEffect>();
+        final List<PotionEffect> plist = new ArrayList<>();
         if (this.getConfig().contains(path + ".Effects")) {
             final String effects = this.getConfig().getString(path + ".Effects");
             final String[] effectsplit = effects.split("\\,");
@@ -1110,7 +1057,7 @@ public class PropHunt extends JavaPlugin implements Listener {
     public void hidePlayer(final Player owner, final ItemStack[] armour) {
         for (final Player viewer : owner.getServer().getOnlinePlayers()) {
             if (viewer != owner) {
-                viewer.hidePlayer(owner);
+                viewer.hidePlayer(this, owner);
             }
         }
         this.dm.undisguisePlayer(owner);
@@ -1120,7 +1067,7 @@ public class PropHunt extends JavaPlugin implements Listener {
         if (shutdown) {
             for (final Player viewer : owner.getServer().getOnlinePlayers()) {
                 if (viewer != owner) {
-                    viewer.showPlayer(owner);
+                    viewer.showPlayer(this, owner);
                 }
             }
         }
@@ -1130,7 +1077,7 @@ public class PropHunt extends JavaPlugin implements Listener {
                 public void run() {
                     for (final Player viewer : owner.getServer().getOnlinePlayers()) {
                         if (viewer != owner) {
-                            viewer.showPlayer(owner);
+                            viewer.showPlayer(PropHunt.this, owner);
                         }
                     }
                 }

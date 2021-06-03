@@ -100,39 +100,17 @@ public class PropHuntListener implements Listener
             return false;
         }
         switch (e.getClickedBlock().getType()) {
-            case ENDER_CHEST: {
-                return true;
-            }
-            case CHEST: {
-                return true;
-            }
-            case STORAGE_MINECART: {
-                return true;
-            }
-            case TRAPPED_CHEST: {
-                return true;
-            }
-            case DISPENSER: {
-                return true;
-            }
-            case POWERED_MINECART: {
-                return true;
-            }
-            case ANVIL: {
-                return true;
-            }
-            case BREWING_STAND: {
-                return true;
-            }
-            case HOPPER: {
-                return true;
-            }
-            case HOPPER_MINECART: {
-                return true;
-            }
-            case DROPPER: {
-                return true;
-            }
+            case ENDER_CHEST:
+            case CHEST_MINECART:
+            case CHEST:
+            case TRAPPED_CHEST:
+            case DISPENSER:
+            case FURNACE_MINECART:
+            case ANVIL:
+            case BREWING_STAND:
+            case HOPPER:
+            case HOPPER_MINECART:
+            case DROPPER:
             case BEACON: {
                 return true;
             }

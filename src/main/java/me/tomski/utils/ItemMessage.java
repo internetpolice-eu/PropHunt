@@ -1,5 +1,6 @@
 package me.tomski.utils;
 
+import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.PacketContainer;
 import org.apache.commons.lang.Validate;
@@ -214,7 +215,7 @@ public class ItemMessage
         }
 
         private void sendItemSlotChange(final Player player, final int slot, final ItemStack stack) {
-            final PacketContainer setSlot = new PacketContainer(103);
+            final PacketContainer setSlot = new PacketContainer(PacketType.Play.Server.SET_SLOT); // 103: PacketType.Play.Server.Set_Slot
             setSlot.getIntegers().write(0, 0).write(1, slot + 36);
             setSlot.getItemModifier().write(0, stack);
             try {

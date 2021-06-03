@@ -44,32 +44,32 @@ public class ArenaManager
     }
 
     public void giveSetupTools(final Player p) {
-        final ItemStack tool1 = new ItemStack(Material.WOOL, 1, (short)1);
+        final ItemStack tool1 = new ItemStack(Material.ORANGE_WOOL, 1);
         final ItemMeta t1meta = tool1.getItemMeta();
         t1meta.setDisplayName(ChatColor.DARK_RED + "Hiders Spawn Tool");
         t1meta.setLore(Arrays.asList(ChatColor.RED + "Place this to set Hider Spawn!"));
         tool1.setItemMeta(t1meta);
-        final ItemStack tool2 = new ItemStack(Material.WOOL, 1, (short)2);
+        final ItemStack tool2 = new ItemStack(Material.MAGENTA_WOOL, 1);
         final ItemMeta t2meta = tool2.getItemMeta();
         t2meta.setDisplayName(ChatColor.DARK_BLUE + "Seekers Spawn Tool");
         t2meta.setLore(Arrays.asList(ChatColor.BLUE + "Place this to set the Seeker Spawn!"));
         tool2.setItemMeta(t2meta);
-        final ItemStack tool3 = new ItemStack(Material.WOOL, 1, (short)3);
+        final ItemStack tool3 = new ItemStack(Material.LIGHT_BLUE_WOOL, 1);
         final ItemMeta t3meta = tool3.getItemMeta();
         t3meta.setDisplayName(ChatColor.DARK_GREEN + "Lobby Spawn Tool");
         t3meta.setLore(Arrays.asList(ChatColor.GREEN + "Click this at the Lobby spawn location", ChatColor.GREEN + "corner of your arena!"));
         tool3.setItemMeta(t3meta);
-        final ItemStack tool4 = new ItemStack(Material.WOOL, 1, (short)4);
+        final ItemStack tool4 = new ItemStack(Material.YELLOW_WOOL, 1);
         final ItemMeta t4meta = tool4.getItemMeta();
         t4meta.setDisplayName(ChatColor.DARK_GREEN + "Spectator Spawn Tool");
         t4meta.setLore(Arrays.asList(ChatColor.GREEN + "Click this at the Spectator spawn location", ChatColor.GREEN + "corner of your arena!"));
         tool4.setItemMeta(t4meta);
-        final ItemStack tool5 = new ItemStack(Material.WOOL, 1, (short)5);
+        final ItemStack tool5 = new ItemStack(Material.LIME_WOOL, 1);
         final ItemMeta t4meta2 = tool5.getItemMeta();
         t4meta2.setDisplayName(ChatColor.DARK_GREEN + "Exit Spawn Tool");
         t4meta2.setLore(Arrays.asList(ChatColor.GREEN + "Click this at the Exit spawn location", ChatColor.GREEN + "corner of your arena!"));
         tool5.setItemMeta(t4meta2);
-        p.getInventory().addItem(new ItemStack[] { tool1, tool2, tool3, tool4, tool5 });
+        p.getInventory().addItem(tool1, tool2, tool3, tool4, tool5);
         p.updateInventory();
     }
 

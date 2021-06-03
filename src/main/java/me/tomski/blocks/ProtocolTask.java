@@ -24,11 +24,15 @@ public class ProtocolTask implements Listener {
     }
 
     public void initProtocol() {
-        PropHunt.protocolManager.getAsynchronousManager().registerAsyncHandler(new PacketAdapter(this.plugin, PacketType.Play.Client.USE_ITEM) {
+        PropHunt.protocolManager.getAsynchronousManager().registerAsyncHandler(new PacketAdapter(this.plugin, PacketType.Play.Client.BLOCK_PLACE) {
             public void onPacketReceiving(final PacketEvent event) {
                 if (GameManager.hiders.contains(event.getPlayer().getName()) ||
                     GameManager.seekers.contains(event.getPlayer().getName())) {
-                    BlockPosition pos = event.getPacket().getBlockPositionModifier().read(0);
+                    BlockPosition pos = event.getPacket().getBlockPositionModifier().readSafely(0);
+                    if (pos == null) {
+                        return;
+                    }
+
                     for (final SolidBlock s : SolidBlockTracker.solidBlocks.values()) {
                         if (s.loc.getBlockX() == pos.getX() && s.loc.getBlockY() == pos.getY() && s.loc.getBlockZ() == pos.getZ()) {
                             event.setCancelled(true);

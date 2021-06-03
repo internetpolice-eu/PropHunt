@@ -5,6 +5,7 @@ depend: [ProtocolLib]
 softdepend: [LibsDisguises, TabAPI, PropHuntSigns, Vault, Multiverse-Core]
 author: Tomski - Owner of Skicraft
 website: www.skicraft.enjin.com
+api-version: 1.16
 commands:
     prophunt:
         description: Use to manage PropHunt activities

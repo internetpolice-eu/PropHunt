@@ -65,10 +65,7 @@ public class BlockChooser implements Listener
     }
 
     private boolean hasPermsForBlock(final Player player, final ItemStack currentItem) {
-        if (currentItem.getData().getData() == 0) {
-            return this.plugin.vaultUtils.permission.has(player, "prophunt.blockchooser." + currentItem.getTypeId());
-        }
-        return this.plugin.vaultUtils.permission.has(player, "prophunt.blockchooser." + currentItem.getTypeId() + "-" + currentItem.getData().getData());
+        return player.hasPermission("prophunt.blockchooser." + currentItem.getType());
     }
 
     private SimpleDisguise parseItemToDisguise(final ItemStack itemStack) {
@@ -77,9 +74,7 @@ public class BlockChooser implements Listener
 
     @EventHandler
     public void inventoryClose(final InventoryCloseEvent e) {
-        if (this.inChooser.contains(e.getPlayer())) {
-            this.inChooser.remove(e.getPlayer());
-        }
+        inChooser.remove(e.getPlayer());
     }
 
     private int getShopSize(final int n) {

@@ -71,10 +71,7 @@ public class LoadoutChooser implements Listener
     }
 
     private boolean hasPermsForItem(final Player player, final ItemStack currentItem) {
-        if (currentItem.getData().getData() == 0) {
-            return this.plugin.vaultUtils.permission.has(player, "prophunt.loadout." + currentItem.getTypeId());
-        }
-        return this.plugin.vaultUtils.permission.has(player, "prophunt.loadout." + currentItem.getTypeId() + "-" + currentItem.getData().getData());
+        return player.hasPermission("prophunt.loadout." + currentItem.getType());
     }
 
     @EventHandler
